@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -59,26 +59,33 @@ class CreateTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
-        $this->customerSession = $this->getMock('\Magento\Customer\Model\Session', [], [], '', false);
-        $this->registrationMock = $this->getMock('\Magento\Customer\Model\Registration', [], [], '', false);
-        $this->redirectMock = $this->getMock('Magento\Framework\App\Response\RedirectInterface');
-        $this->response = $this->getMock('Magento\Framework\App\ResponseInterface');
-        $this->request = $this->getMockBuilder('Magento\Framework\App\Request\Http')
+        $this->customerSession = $this->getMock(\Magento\Customer\Model\Session::class, [], [], '', false);
+        $this->registrationMock = $this->getMock(\Magento\Customer\Model\Registration::class, [], [], '', false);
+        $this->redirectMock = $this->getMock(\Magento\Framework\App\Response\RedirectInterface::class);
+        $this->response = $this->getMock(\Magento\Framework\App\ResponseInterface::class);
+        $this->request = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
             ->disableOriginalConstructor()->getMock();
-        $this->redirectResultMock = $this->getMock('Magento\Framework\Controller\Result\Redirect', [], [], '', false);
+        $this->redirectResultMock = $this->getMock(
+            \Magento\Framework\Controller\Result\Redirect::class,
+            [],
+            [],
+            '',
+            false
+        );
 
         $this->redirectFactoryMock = $this->getMock(
-            'Magento\Framework\Controller\Result\RedirectFactory',
+            \Magento\Framework\Controller\Result\RedirectFactory::class,
             ['create'],
             [],
             '',
             false
         );
 
-        $this->resultPageMock = $this->getMock('Magento\Framework\View\Result\Page', [], [], '', false );
-        $this->pageFactoryMock = $this->getMock('Magento\Framework\View\Result\PageFactory', [], [], '', false);
+        $this->resultPageMock = $this->getMock(\Magento\Framework\View\Result\Page::class, [], [], '', false );
+        $this->pageFactoryMock = $this->getMock(\Magento\Framework\View\Result\PageFactory::class, [], [], '', false);
 
-        $this->object = $objectManager->getObject('Magento\Customer\Controller\Account\Create',
+        $this->object = $objectManager->getObject(
+            \Magento\Customer\Controller\Account\Create::class,
             [
                 'request' => $this->request,
                 'response' => $this->response,
@@ -116,7 +123,7 @@ class CreateTest extends \PHPUnit_Framework_TestCase
         $this->resultPageMock->expects($this->never())
             ->method('getLayout');
 
-        $this->object->executeInternal();
+        $this->object->execute();
     }
 
     /**
@@ -139,6 +146,6 @@ class CreateTest extends \PHPUnit_Framework_TestCase
             ->method('create')
             ->willReturn($this->resultPageMock);
 
-        $this->object->executeInternal();
+        $this->object->execute();
     }
 }

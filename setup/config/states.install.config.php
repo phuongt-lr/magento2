@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -30,7 +30,7 @@ return [
             'id'          => 'root.landing-install',
             'url'         => 'landing-install',
             'templateUrl' => "$base/landing-installer",
-            'title'       => 'Landing',
+            'title'       => 'Installation',
             'controller'  => 'landingController',
             'main'        => true,
             'default'     => true,
@@ -120,6 +120,7 @@ return [
             'id'          => 'root.success',
             'url'         => 'success',
             'templateUrl' => "{$base}/success",
+            'title'       => 'Success',
             'controller'  => 'successController',
             'main'        => true,
             'order'       => 8,

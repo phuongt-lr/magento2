@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Controller\Adminhtml\Order\Create;
@@ -49,11 +49,11 @@ class ShowUpdateResult extends \Magento\Sales\Controller\Adminhtml\Order\Create
      *
      * @return \Magento\Framework\Controller\Result\Raw
      */
-    public function executeInternal()
+    public function execute()
     {
         /** @var \Magento\Framework\Controller\Result\Raw $resultRaw */
         $resultRaw = $this->resultRawFactory->create();
-        $session = $this->_objectManager->get('Magento\Backend\Model\Session');
+        $session = $this->_objectManager->get(\Magento\Backend\Model\Session::class);
         if ($session->hasUpdateResult() && is_scalar($session->getUpdateResult())) {
             $resultRaw->setContents($session->getUpdateResult());
         }

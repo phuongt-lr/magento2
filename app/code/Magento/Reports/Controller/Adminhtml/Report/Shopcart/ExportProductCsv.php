@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Reports\Controller\Adminhtml\Report\Shopcart;
@@ -16,11 +16,11 @@ class ExportProductCsv extends \Magento\Reports\Controller\Adminhtml\Report\Shop
      *
      * @return ResponseInterface
      */
-    public function executeInternal()
+    public function execute()
     {
         $fileName = 'shopcart_product.csv';
         $content = $this->_view->getLayout()->createBlock(
-            'Magento\Reports\Block\Adminhtml\Shopcart\Product\Grid'
+            \Magento\Reports\Block\Adminhtml\Shopcart\Product\Grid::class
         )->getCsvFile();
 
         return $this->_fileFactory->create($fileName, $content, DirectoryList::VAR_DIR);

@@ -1,12 +1,15 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Test\Unit\Model\CustomOptions;
 
 use Magento\Catalog\Model\CustomOptions\CustomOptionProcessor;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class CustomOptionProcessorTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -48,39 +51,43 @@ class CustomOptionProcessorTest extends \PHPUnit_Framework_TestCase
     /** @var CustomOptionProcessor */
     protected $processor;
 
-    public function setUp()
+    protected function setUp()
     {
-        $this->objectFactory = $this->getMockBuilder('Magento\Framework\DataObject\Factory')
+        $this->objectFactory = $this->getMockBuilder(\Magento\Framework\DataObject\Factory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->productOptionFactory = $this->getMockBuilder('Magento\Quote\Model\Quote\ProductOptionFactory')
+        $this->productOptionFactory = $this->getMockBuilder(\Magento\Quote\Model\Quote\ProductOptionFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->extensionFactory = $this->getMockBuilder('Magento\Quote\Api\Data\ProductOptionExtensionFactory')
+        $this->extensionFactory = $this->getMockBuilder(\Magento\Quote\Api\Data\ProductOptionExtensionFactory::class)
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->customOptionFactory = $this->getMockBuilder('Magento\Catalog\Model\CustomOptions\CustomOptionFactory')
+        $this->customOptionFactory = $this->getMockBuilder(
+            \Magento\Catalog\Model\CustomOptions\CustomOptionFactory::class
+        )
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->cartItem = $this->getMockBuilder('Magento\Quote\Api\Data\CartItemInterface')
+        $this->cartItem = $this->getMockBuilder(\Magento\Quote\Api\Data\CartItemInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getOptionByCode', 'getProductOption', 'setProductOption'])
             ->getMockForAbstractClass();
-        $this->extensibleAttribute = $this->getMockBuilder('Magento\Quote\Api\Data\ProductOptionExtensionInterface')
+        $this->extensibleAttribute = $this->getMockBuilder(
+            \Magento\Quote\Api\Data\ProductOptionExtensionInterface::class
+        )
             ->disableOriginalConstructor()
             ->setMethods(['setCustomOptions', 'getCustomOptions'])
             ->getMockForAbstractClass();
-        $this->productOption = $this->getMockBuilder('Magento\Quote\Model\Quote\ProductOption')
+        $this->productOption = $this->getMockBuilder(\Magento\Quote\Model\Quote\ProductOption::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->customOption = $this->getMockBuilder('Magento\Catalog\Api\Data\CustomOptionInterface')
+        $this->customOption = $this->getMockBuilder(\Magento\Catalog\Api\Data\CustomOptionInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
-        $this->buyRequest = $this->getMockBuilder('Magento\Framework\DataObject')
+        $this->buyRequest = $this->getMockBuilder(\Magento\Framework\DataObject::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -122,7 +129,7 @@ class CustomOptionProcessorTest extends \PHPUnit_Framework_TestCase
     public function testProcessCustomOptions()
     {
         $optionId = 23;
-        $quoteItemOption = $this->getMockBuilder('Magento\Quote\Model\Quote\Item\Option')
+        $quoteItemOption = $this->getMockBuilder(\Magento\Quote\Model\Quote\Item\Option::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->cartItem->expects($this->atLeastOnce())

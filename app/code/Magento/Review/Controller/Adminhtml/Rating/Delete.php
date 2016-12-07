@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Review\Controller\Adminhtml\Rating;
@@ -13,14 +13,14 @@ class Delete extends RatingController
     /**
      * @return \Magento\Backend\Model\View\Result\Redirect
      */
-    public function executeInternal()
+    public function execute()
     {
         /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         if ($this->getRequest()->getParam('id') > 0) {
             try {
                 /** @var \Magento\Review\Model\Rating $model */
-                $model = $this->_objectManager->create('Magento\Review\Model\Rating');
+                $model = $this->_objectManager->create(\Magento\Review\Model\Rating::class);
                 $model->load($this->getRequest()->getParam('id'))->delete();
                 $this->messageManager->addSuccess(__('You deleted the rating.'));
             } catch (\Exception $e) {

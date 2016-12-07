@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -70,7 +70,7 @@ class Group extends \Magento\Framework\Model\AbstractExtensibleModel implements
      */
     protected function _construct()
     {
-        $this->_init('Magento\Eav\Model\ResourceModel\Entity\Attribute\Group');
+        $this->_init(\Magento\Eav\Model\ResourceModel\Entity\Attribute\Group::class);
     }
 
     /**
@@ -147,11 +147,9 @@ class Group extends \Magento\Framework\Model\AbstractExtensibleModel implements
     {
         return $this->getData(self::ATTRIBUTE_SET_ID);
     }
+
     /**
-     * Set id
-     *
-     * @param string $attributeGroupId
-     * @return $this
+     * {@inheritdoc}
      */
     public function setAttributeGroupId($attributeGroupId)
     {
@@ -159,10 +157,7 @@ class Group extends \Magento\Framework\Model\AbstractExtensibleModel implements
     }
 
     /**
-     * Set name
-     *
-     * @param string $attributeGroupName
-     * @return $this
+     * {@inheritdoc}
      */
     public function setAttributeGroupName($attributeGroupName)
     {
@@ -170,10 +165,7 @@ class Group extends \Magento\Framework\Model\AbstractExtensibleModel implements
     }
 
     /**
-     * Set attribute set id
-     *
-     * @param int $attributeSetId
-     * @return $this
+     * {@inheritdoc}
      */
     public function setAttributeSetId($attributeSetId)
     {

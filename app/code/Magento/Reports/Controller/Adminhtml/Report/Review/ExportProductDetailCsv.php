@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Reports\Controller\Adminhtml\Report\Review;
@@ -16,11 +16,11 @@ class ExportProductDetailCsv extends \Magento\Reports\Controller\Adminhtml\Repor
      *
      * @return ResponseInterface
      */
-    public function executeInternal()
+    public function execute()
     {
         $fileName = 'review_product_detail.csv';
         $content = $this->_view->getLayout()->createBlock(
-            'Magento\Reports\Block\Adminhtml\Review\Detail\Grid'
+            \Magento\Reports\Block\Adminhtml\Review\Detail\Grid::class
         )->getCsv();
 
         return $this->_fileFactory->create($fileName, $content, DirectoryList::VAR_DIR);

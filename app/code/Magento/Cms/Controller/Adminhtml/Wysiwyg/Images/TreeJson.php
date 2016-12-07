@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Cms\Controller\Adminhtml\Wysiwyg\Images;
@@ -40,7 +40,7 @@ class TreeJson extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images
      *
      * @return \Magento\Framework\Controller\ResultInterface
      */
-    public function executeInternal()
+    public function execute()
     {
         /** @var \Magento\Framework\Controller\Result\Json $resultJson */
         $resultJson = $this->resultJsonFactory->create();
@@ -50,7 +50,7 @@ class TreeJson extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images
             $layout = $this->layoutFactory->create();
             $resultJson->setJsonData(
                 $layout->createBlock(
-                    'Magento\Cms\Block\Adminhtml\Wysiwyg\Images\Tree'
+                    \Magento\Cms\Block\Adminhtml\Wysiwyg\Images\Tree::class
                 )->getTreeJson()
             );
         } catch (\Exception $e) {

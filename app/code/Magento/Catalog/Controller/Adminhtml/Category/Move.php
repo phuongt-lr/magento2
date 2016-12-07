@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Controller\Adminhtml\Category;
@@ -46,7 +46,7 @@ class Move extends \Magento\Catalog\Controller\Adminhtml\Category
      *
      * @return \Magento\Framework\Controller\Result\Raw
      */
-    public function executeInternal()
+    public function execute()
     {
         /**
          * New parent category identifier
@@ -67,12 +67,12 @@ class Move extends \Magento\Catalog\Controller\Adminhtml\Category
                 throw new \Exception(__('Category is not available for requested store.'));
             }
             $category->move($parentNodeId, $prevNodeId);
-        } catch (\Magento\Framework\Exception\LocalizedException $e) {
-            $error = true;
-            $this->messageManager->addError(__('There was a category move error.'));
         } catch (\Magento\Framework\Exception\AlreadyExistsException $e) {
             $error = true;
             $this->messageManager->addError(__('There was a category move error. %1', $e->getMessage()));
+        } catch (\Magento\Framework\Exception\LocalizedException $e) {
+            $error = true;
+            $this->messageManager->addError($e->getMessage());
         } catch (\Exception $e) {
             $error = true;
             $this->messageManager->addError(__('There was a category move error.'));
@@ -80,7 +80,7 @@ class Move extends \Magento\Catalog\Controller\Adminhtml\Category
         }
 
         if (!$error) {
-            $this->messageManager->addSuccess(__('You moved the category'));
+            $this->messageManager->addSuccess(__('You moved the category.'));
         }
 
         $block->setMessages($this->messageManager->getMessages(true));

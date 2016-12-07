@@ -1,5 +1,5 @@
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 /*jshint browser:true jquery:true*/
@@ -10,11 +10,17 @@ define([], function() {
      * Returns new address object
      */
     return function (addressData) {
+        var regionId;
+
+        if (addressData.region['region_id'] && addressData.region['region_id'] !== '0') {
+            regionId = addressData.region['region_id'] + '';
+        }
+
         return {
             customerAddressId: addressData.id,
             email: addressData.email,
             countryId: addressData.country_id,
-            regionId: addressData.region_id,
+            regionId: regionId,
             regionCode: addressData.region.region_code,
             region: addressData.region.region,
             customerId: addressData.customer_id,
@@ -32,6 +38,7 @@ define([], function() {
             vatId: addressData.vat_id,
             sameAsBilling: addressData.same_as_billing,
             saveInAddressBook: addressData.save_in_address_book,
+            customAttributes: addressData.custom_attributes,
             isDefaultShipping: function() {
                 return addressData.default_shipping;
             },

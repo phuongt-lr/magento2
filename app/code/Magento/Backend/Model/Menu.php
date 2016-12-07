@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Backend\Model;
@@ -32,7 +32,7 @@ class Menu extends \ArrayObject
             $this->_path = $pathInMenuStructure . '/';
         }
         $this->_logger = $logger;
-        $this->setIteratorClass('Magento\Backend\Model\Menu\Iterator');
+        $this->setIteratorClass(\Magento\Backend\Model\Menu\Iterator::class);
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Controller\Adminhtml\Product\Widget;
@@ -38,7 +38,7 @@ class Chooser extends \Magento\Backend\App\Action
      *
      * @return \Magento\Framework\Controller\Result\Raw
      */
-    public function executeInternal()
+    public function execute()
     {
         $uniqId = $this->getRequest()->getParam('uniq_id');
         $massAction = $this->getRequest()->getParam('use_massaction', false);
@@ -46,7 +46,7 @@ class Chooser extends \Magento\Backend\App\Action
 
         $layout = $this->layoutFactory->create();
         $productsGrid = $layout->createBlock(
-            'Magento\Catalog\Block\Adminhtml\Product\Widget\Chooser',
+            \Magento\Catalog\Block\Adminhtml\Product\Widget\Chooser::class,
             '',
             [
                 'data' => [
@@ -62,7 +62,7 @@ class Chooser extends \Magento\Backend\App\Action
 
         if (!$this->getRequest()->getParam('products_grid')) {
             $categoriesTree = $layout->createBlock(
-                'Magento\Catalog\Block\Adminhtml\Category\Widget\Chooser',
+                \Magento\Catalog\Block\Adminhtml\Category\Widget\Chooser::class,
                 '',
                 [
                     'data' => [
@@ -73,7 +73,7 @@ class Chooser extends \Magento\Backend\App\Action
                 ]
             );
 
-            $html = $layout->createBlock('Magento\Catalog\Block\Adminhtml\Product\Widget\Chooser\Container')
+            $html = $layout->createBlock(\Magento\Catalog\Block\Adminhtml\Product\Widget\Chooser\Container::class)
                 ->setTreeHtml($categoriesTree->toHtml())
                 ->setGridHtml($html)
                 ->toHtml();

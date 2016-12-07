@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -12,6 +12,8 @@
 namespace Magento\Framework\Config;
 
 use Magento\Framework\Config\Dom\UrnResolver;
+use Magento\Framework\Config\Dom\ValidationSchemaException;
+use Magento\Framework\Phrase;
 
 /**
  * Class Dom
@@ -108,6 +110,26 @@ class Dom
         $this->errorFormat = $errorFormat;
         $this->dom = $this->_initDom($xml);
         $this->rootNamespace = $this->dom->lookupNamespaceUri($this->dom->namespaceURI);
+    }
+
+    /**
+     * Retrieve array of xml errors
+     *
+     * @param $errorFormat
+     * @return string[]
+     */
+    private static function getXmlErrors($errorFormat)
+    {
+        $errors = [];
+        $validationErrors = libxml_get_errors();
+        if (count($validationErrors)) {
+            foreach ($validationErrors as $error) {
+                $errors[] = self::_renderErrorMessage($error, $errorFormat);
+            }
+        } else {
+            $errors[] = 'Unknown validation error';
+        }
+        return $errors;
     }
 
     /**
@@ -229,7 +251,7 @@ class Dom
                 $value = $node->getAttribute($attribute);
                 $constraints[] = "@{$attribute}='{$value}'";
             }
-            $path .= '[' . join(' and ', $constraints) . ']';
+            $path .= '[' . implode(' and ', $constraints) . ']';
         } elseif ($idAttribute && ($value = $node->getAttribute($idAttribute))) {
             $path .= "[@{$idAttribute}='{$value}']";
         }
@@ -286,22 +308,17 @@ class Dom
         $schema = self::$urnResolver->getRealPath($schema);
         libxml_use_internal_errors(true);
         libxml_set_external_entity_loader([self::$urnResolver, 'registerEntityLoader']);
+        $errors = [];
         try {
             $result = $dom->schemaValidate($schema);
-            $errors = [];
             if (!$result) {
-                $validationErrors = libxml_get_errors();
-                if (count($validationErrors)) {
-                    foreach ($validationErrors as $error) {
-                        $errors[] = self::_renderErrorMessage($error, $errorFormat);
-                    }
-                } else {
-                    $errors[] = 'Unknown validation error';
-                }
+                $errors = self::getXmlErrors($errorFormat);
             }
         } catch (\Exception $exception) {
+            $errors = self::getXmlErrors($errorFormat);
             libxml_use_internal_errors(false);
-            throw $exception;
+            array_unshift($errors, new Phrase('Processed schema file: %1', [$schema]));
+            throw new ValidationSchemaException(new Phrase(implode("\n", $errors)));
         }
         libxml_set_external_entity_loader(null);
         libxml_use_internal_errors(false);
@@ -334,7 +351,7 @@ class Dom
                 }
                 if (!empty($unsupported)) {
                     throw new \InvalidArgumentException(
-                        "Error format '{$format}' contains unsupported placeholders: " . join(', ', $unsupported)
+                        "Error format '{$format}' contains unsupported placeholders: " . implode(', ', $unsupported)
                     );
                 }
             }
@@ -362,7 +379,14 @@ class Dom
     protected function _initDom($xml)
     {
         $dom = new \DOMDocument();
-        $dom->loadXML($xml);
+        $useErrors = libxml_use_internal_errors(true);
+        $res = $dom->loadXML($xml);
+        if (!$res) {
+            $errors = self::getXmlErrors($this->errorFormat);
+            libxml_use_internal_errors($useErrors);
+            throw new \Magento\Framework\Config\Dom\ValidationException(implode("\n", $errors));
+        }
+        libxml_use_internal_errors($useErrors);
         if ($this->validationState->isValidationRequired() && $this->schema) {
             $errors = $this->validateDomDocument($dom, $this->schema, $this->errorFormat);
             if (count($errors)) {

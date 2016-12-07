@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\ProductAlert\Controller\Unsubscribe;
@@ -36,7 +36,7 @@ class Stock extends UnsubscribeController
     /**
      * @return \Magento\Framework\Controller\Result\Redirect
      */
-    public function executeInternal()
+    public function execute()
     {
         $productId = (int)$this->getRequest()->getParam('product');
         /** @var \Magento\Framework\Controller\Result\Redirect $resultRedirect */
@@ -52,11 +52,11 @@ class Stock extends UnsubscribeController
                 throw new NoSuchEntityException();
             }
 
-            $model = $this->_objectManager->create('Magento\ProductAlert\Model\Stock')
+            $model = $this->_objectManager->create(\Magento\ProductAlert\Model\Stock::class)
                 ->setCustomerId($this->customerSession->getCustomerId())
                 ->setProductId($product->getId())
                 ->setWebsiteId(
-                    $this->_objectManager->get('Magento\Store\Model\StoreManagerInterface')
+                    $this->_objectManager->get(\Magento\Store\Model\StoreManagerInterface::class)
                         ->getStore()
                         ->getWebsiteId()
                 )

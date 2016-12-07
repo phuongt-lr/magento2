@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Authorizenet\Controller\Directpost\Payment;
@@ -13,11 +13,11 @@ class ReturnQuote extends \Magento\Authorizenet\Controller\Directpost\Payment
      *
      * @return void
      */
-    public function executeInternal()
+    public function execute()
     {
         $this->_returnCustomerQuote();
         $this->getResponse()->representJson(
-            $this->_objectManager->get('Magento\Framework\Json\Helper\Data')->jsonEncode(['success' => 1])
+            $this->_objectManager->get(\Magento\Framework\Json\Helper\Data::class)->jsonEncode(['success' => 1])
         );
     }
 }

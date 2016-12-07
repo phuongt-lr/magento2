@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Downloadable\Controller\Download;
@@ -17,11 +17,11 @@ class LinkSample extends \Magento\Downloadable\Controller\Download
      * @return ResponseInterface
      * @SuppressWarnings(PHPMD.ExitExpression)
      */
-    public function executeInternal()
+    public function execute()
     {
         $linkId = $this->getRequest()->getParam('link_id', 0);
         /** @var \Magento\Downloadable\Model\Link $link */
-        $link = $this->_objectManager->create('Magento\Downloadable\Model\Link')->load($linkId);
+        $link = $this->_objectManager->create(\Magento\Downloadable\Model\Link::class)->load($linkId);
         if ($link->getId()) {
             $resource = '';
             $resourceType = '';
@@ -30,7 +30,7 @@ class LinkSample extends \Magento\Downloadable\Controller\Download
                 $resourceType = DownloadHelper::LINK_TYPE_URL;
             } elseif ($link->getSampleType() == DownloadHelper::LINK_TYPE_FILE) {
                 $resource = $this->_objectManager->get(
-                    'Magento\Downloadable\Helper\File'
+                    \Magento\Downloadable\Helper\File::class
                 )->getFilePath(
                     $this->_getLink()->getBaseSamplePath(),
                     $link->getSampleFile()

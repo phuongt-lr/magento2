@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 -->
@@ -48,6 +48,7 @@
                             <argument name="width" xsi:type="string">180</argument>
                             <argument name="align" xsi:type="string">left</argument>
                             <argument name="sortable" xsi:type="string">0</argument>
+                            <argument name="translate" xsi:type="boolean">true</argument>
                         </arguments>
                     </block>
                     <block class="Magento\Backend\Block\Widget\Grid\Column" as="description">
@@ -57,6 +58,7 @@
                             <argument name="type" xsi:type="string">text</argument>
                             <argument name="align" xsi:type="string">left</argument>
                             <argument name="sortable" xsi:type="string">0</argument>
+                            <argument name="translate" xsi:type="boolean">true</argument>
                         </arguments>
                     </block>
                     <block class="Magento\Backend\Block\Widget\Grid\Column" as="tags">

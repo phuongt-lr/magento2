@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -93,7 +93,7 @@ class Value extends AbstractModel implements \Magento\Catalog\Api\Data\ProductCu
      */
     protected function _construct()
     {
-        $this->_init('Magento\Catalog\Model\ResourceModel\Product\Option\Value');
+        $this->_init(\Magento\Catalog\Model\ResourceModel\Product\Option\Value::class);
     }
 
     /**
@@ -200,13 +200,6 @@ class Value extends AbstractModel implements \Magento\Catalog\Api\Data\ProductCu
                 'store_id',
                 $this->getOption()->getStoreId()
             );
-
-            if ($this->getData('option_type_id') == '-1') {
-                //change to 0
-                $this->unsetData('option_type_id');
-            } else {
-                $this->setId($this->getData('option_type_id'));
-            }
 
             if ($this->getData('is_delete') == '1') {
                 if ($this->getId()) {

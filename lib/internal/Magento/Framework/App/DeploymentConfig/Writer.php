@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -8,11 +8,13 @@ namespace Magento\Framework\App\DeploymentConfig;
 
 use Magento\Framework\App\DeploymentConfig;
 use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\Filesystem;
 use Magento\Framework\Config\File\ConfigFilePool;
+use Magento\Framework\Phrase;
 
 /**
- * Deployment configuration writer
+ * Deployment configuration writer to files: env.php, config.php (config.local.php, config.dist.php)
  */
 class Writer
 {
@@ -91,17 +93,18 @@ class Writer
      *
      * @param array $data
      * @param bool $override
+     * @param string $pool
      * @return void
+     * @throws FileSystemException
      */
-    public function saveConfig(array $data, $override = false)
+    public function saveConfig(array $data, $override = false, $pool = null)
     {
-        $paths = $this->configFilePool->getPaths();
-
         foreach ($data as $fileKey => $config) {
-            if (isset($paths[$fileKey])) {
+            $paths = $pool ? $this->configFilePool->getPathsByPool($pool) : $this->configFilePool->getPaths();
 
-                if ($this->filesystem->getDirectoryWrite(DirectoryList::CONFIG)->isExist($paths[$fileKey])) {
-                    $currentData = $this->reader->load($fileKey);
+            if (isset($paths[$fileKey])) {
+                $currentData = $this->reader->loadConfigFile($fileKey, $paths[$fileKey], true);
+                if ($currentData) {
                     if ($override) {
                         $config = array_merge($currentData, $config);
                     } else {
@@ -110,7 +113,14 @@ class Writer
                 }
 
                 $contents = $this->formatter->format($config);
-                $this->filesystem->getDirectoryWrite(DirectoryList::CONFIG)->writeFile($paths[$fileKey], $contents);
+                try {
+                    $writeFilePath = $paths[$fileKey];
+                    $this->filesystem->getDirectoryWrite(DirectoryList::CONFIG)->writeFile($writeFilePath, $contents);
+                } catch (FileSystemException $e) {
+                    throw new FileSystemException(
+                        new Phrase('Deployment config file %1 is not writable.', [$paths[$fileKey]])
+                    );
+                }
                 if (function_exists('opcache_invalidate')) {
                     opcache_invalidate(
                         $this->filesystem->getDirectoryRead(DirectoryList::CONFIG)->getAbsolutePath($paths[$fileKey])

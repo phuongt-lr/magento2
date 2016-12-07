@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -43,28 +43,28 @@ class StructureTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->_flyweightFactory = $this->getMock(
-            'Magento\Config\Model\Config\Structure\Element\FlyweightFactory',
+            \Magento\Config\Model\Config\Structure\Element\FlyweightFactory::class,
             [],
             [],
             '',
             false
         );
         $this->_tabIteratorMock = $this->getMock(
-            'Magento\Config\Model\Config\Structure\Element\Iterator\Tab',
+            \Magento\Config\Model\Config\Structure\Element\Iterator\Tab::class,
             [],
             [],
             '',
             false
         );
         $this->_structureDataMock = $this->getMock(
-            'Magento\Config\Model\Config\Structure\Data',
+            \Magento\Config\Model\Config\Structure\Data::class,
             [],
             [],
             '',
             false
         );
         $this->_scopeDefinerMock = $this->getMock(
-            'Magento\Config\Model\Config\ScopeDefiner',
+            \Magento\Config\Model\Config\ScopeDefiner::class,
             [],
             [],
             '',
@@ -102,7 +102,7 @@ class StructureTest extends \PHPUnit_Framework_TestCase
     public function testGetTabsBuildsSectionTree()
     {
         $this->_structureDataMock = $this->getMock(
-            'Magento\Config\Model\Config\Structure\Data',
+            \Magento\Config\Model\Config\Structure\Data::class,
             [],
             [],
             '',
@@ -128,6 +128,55 @@ class StructureTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->_tabIteratorMock, $model->getTabs());
     }
 
+    public function testGetSectionList()
+    {
+        $this->_structureDataMock = $this->getMock(
+            \Magento\Config\Model\Config\Structure\Data::class,
+            [],
+            [],
+            '',
+            false
+        );
+        $this->_structureDataMock->expects(
+            $this->any()
+        )->method(
+            'get'
+        )->will(
+            $this->returnValue(
+                [
+                    'sections' => [
+                        'section1' => [
+                            'children' => [
+                                'child_id_1' => 'child_data',
+                                'child_id_2' => 'child_data',
+                                'child_id_3' => 'child_data'
+                            ]
+                        ],
+                        'section2' => [
+                            'children' => [
+                                'child_id_1' => 'child_data'
+                            ]
+                        ],
+                    ]
+                ]
+            )
+        );
+        $expected = [
+            'section1_child_id_1' => true,
+            'section1_child_id_2' => true,
+            'section1_child_id_3' => true,
+            'section2_child_id_1' => true
+        ];
+        $model = new \Magento\Config\Model\Config\Structure(
+            $this->_structureDataMock,
+            $this->_tabIteratorMock,
+            $this->_flyweightFactory,
+            $this->_scopeDefinerMock
+        );
+
+        $this->assertEquals($expected, $model->getSectionList());
+    }
+
     /**
      * @param string $path
      * @param string $expectedType
@@ -142,7 +191,7 @@ class StructureTest extends \PHPUnit_Framework_TestCase
         $expectedPath
     ) {
         $expectedConfig = ['id' => $expectedId, 'path' => $expectedPath, '_elementType' => $expectedType];
-        $elementMock = $this->getMock('Magento\Config\Model\Config\Structure\ElementInterface');
+        $elementMock = $this->getMock(\Magento\Config\Model\Config\Structure\ElementInterface::class);
         $elementMock->expects($this->once())->method('setData')->with($expectedConfig);
         $this->_flyweightFactory->expects(
             $this->once()
@@ -169,7 +218,7 @@ class StructureTest extends \PHPUnit_Framework_TestCase
     public function testGetElementReturnsProperElementByPath()
     {
         $elementMock = $this->getMock(
-            'Magento\Config\Model\Config\Structure\Element\Field',
+            \Magento\Config\Model\Config\Structure\Element\Field::class,
             [],
             [],
             '',
@@ -194,7 +243,7 @@ class StructureTest extends \PHPUnit_Framework_TestCase
     public function testGetElementByPathPartsIfSectionDataIsEmpty()
     {
         $elementMock = $this->getMock(
-            'Magento\Config\Model\Config\Structure\Element\Field',
+            \Magento\Config\Model\Config\Structure\Element\Field::class,
             [],
             [],
             '',
@@ -218,7 +267,7 @@ class StructureTest extends \PHPUnit_Framework_TestCase
             );
 
         $structureDataMock = $this->getMock(
-            'Magento\Config\Model\Config\Structure\Data',
+            \Magento\Config\Model\Config\Structure\Data::class,
             [],
             [],
             '',
@@ -247,7 +296,7 @@ class StructureTest extends \PHPUnit_Framework_TestCase
     public function testGetFirstSectionReturnsFirstAllowedSection()
     {
         $tabMock = $this->getMock(
-            'Magento\Config\Model\Config\Structure\Element\Tab',
+            \Magento\Config\Model\Config\Structure\Element\Tab::class,
             ['current', 'getChildren', 'rewind'],
             [],
             '',
@@ -264,7 +313,7 @@ class StructureTest extends \PHPUnit_Framework_TestCase
     public function testGetElementReturnsProperElementByPathCachesObject()
     {
         $elementMock = $this->getMock(
-            'Magento\Config\Model\Config\Structure\Element\Field',
+            \Magento\Config\Model\Config\Structure\Element\Field::class,
             [],
             [],
             '',
@@ -301,7 +350,7 @@ class StructureTest extends \PHPUnit_Framework_TestCase
     public function getFieldPathsByAttributeDataProvider()
     {
         return [
-            ['backend_model', 'Magento\Config\Model\Config\Backend\Encrypted', [
+            ['backend_model', \Magento\Config\Model\Config\Backend\Encrypted::class, [
                 'section_1/group_1/field_2',
                 'section_1/group_level_1/group_level_2/group_level_3/field_3_1_1',
                 'section_2/group_3/field_4',

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Review\Controller\Adminhtml\Product;
@@ -15,14 +15,14 @@ class Post extends ProductController
     /**
      * @return \Magento\Backend\Model\View\Result\Redirect
      */
-    public function executeInternal()
+    public function execute()
     {
         $productId = $this->getRequest()->getParam('product_id', false);
         /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         if ($data = $this->getRequest()->getPostValue()) {
             /** @var \Magento\Store\Model\StoreManagerInterface $storeManager */
-            $storeManager = $this->_objectManager->get('Magento\Store\Model\StoreManagerInterface');
+            $storeManager = $this->_objectManager->get(\Magento\Store\Model\StoreManagerInterface::class);
             if ($storeManager->hasSingleStore()) {
                 $data['stores'] = [
                     $storeManager->getStore(true)->getId(),

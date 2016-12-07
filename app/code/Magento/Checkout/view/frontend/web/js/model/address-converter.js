@@ -1,5 +1,5 @@
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define(
@@ -44,6 +44,13 @@ define(
                         addressData.region.region_code = region['code'];
                         addressData.region.region = region['name'];
                     }
+                } else if (
+                    !addressData.region_id
+                    && countryData()[addressData.country_id]
+                    && countryData()[addressData.country_id]['regions']
+                ) {
+                    addressData.region.region_code = '';
+                    addressData.region.region = '';
                 }
                 delete addressData.region_id;
 
@@ -107,21 +114,22 @@ define(
              */
             objectToArray: function (object) {
                 var convertedArray = [];
+
                 $.each(object, function (key) {
-                    return object[key].length ? convertedArray.push(object[key]) : false;
+                    return typeof object[key] === 'string' ? convertedArray.push(object[key]) : false;
                 });
 
                 return convertedArray.slice(0);
             },
 
             addressToEstimationAddress: function (address) {
-                var estimatedAddressData = {
-                    country_id: address.countryId,
-                    region: address.region,
-                    region_id: address.regionId,
-                    postcode: address.postcode
-                };
-               return this.formAddressDataToQuoteAddress(estimatedAddressData);
+                var self = this;
+                var estimatedAddressData = {};
+
+                $.each(address, function (key) {
+                    estimatedAddressData[self.toUnderscore(key)] = address[key];
+                });
+                return this.formAddressDataToQuoteAddress(estimatedAddressData);
             }
         };
     }

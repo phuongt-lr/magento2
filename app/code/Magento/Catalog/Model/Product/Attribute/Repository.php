@@ -1,13 +1,14 @@
 <?php
 /**
  *
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Model\Product\Attribute;
 
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Eav\Api\Data\AttributeInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -48,6 +49,11 @@ class Repository implements \Magento\Catalog\Api\ProductAttributeRepositoryInter
      * @var \Magento\Framework\Api\SearchCriteriaBuilder
      */
     protected $searchCriteriaBuilder;
+
+    /**
+     * @var \Magento\Catalog\Api\ProductAttributeOptionManagementInterface
+     */
+    private $optionManagement;
 
     /**
      * @param \Magento\Catalog\Model\ResourceModel\Attribute $attributeResource
@@ -112,12 +118,17 @@ class Repository implements \Magento\Catalog\Api\ProductAttributeRepositoryInter
                 throw NoSuchEntityException::singleField('attribute_code', $existingModel->getAttributeCode());
             }
 
+            // Attribute code must not be changed after attribute creation
+            $attribute->setAttributeCode($existingModel->getAttributeCode());
             $attribute->setAttributeId($existingModel->getAttributeId());
             $attribute->setIsUserDefined($existingModel->getIsUserDefined());
             $attribute->setFrontendInput($existingModel->getFrontendInput());
 
             if (is_array($attribute->getFrontendLabels())) {
-                $frontendLabel[0] = $existingModel->getDefaultFrontendLabel();
+                $defaultFrontendLabel = $attribute->getDefaultFrontendLabel();
+                $frontendLabel[0] = !empty($defaultFrontendLabel)
+                    ? $defaultFrontendLabel
+                    : $existingModel->getDefaultFrontendLabel();
                 foreach ($attribute->getFrontendLabels() as $item) {
                     $frontendLabel[$item->getStoreId()] = $item->getLabel();
                 }
@@ -171,7 +182,13 @@ class Repository implements \Magento\Catalog\Api\ProductAttributeRepositoryInter
             $attribute->setIsUserDefined(1);
         }
         $this->attributeResource->save($attribute);
-        return $attribute;
+
+        if (!empty($attribute->getData(AttributeInterface::OPTIONS))) {
+            foreach ($attribute->getOptions() as $option) {
+                $this->getOptionManagement()->add($attribute->getAttributeCode(), $option);
+            }
+        }
+        return $this->get($attribute->getAttributeCode());
     }
 
     /**
@@ -248,5 +265,17 @@ class Repository implements \Magento\Catalog\Api\ProductAttributeRepositoryInter
         if (!$validator->isValid($frontendInput)) {
             throw InputException::invalidFieldValue('frontend_input', $frontendInput);
         }
+    }
+
+    /**
+     * @return \Magento\Catalog\Api\ProductAttributeOptionManagementInterface
+     */
+    private function getOptionManagement()
+    {
+        if (null === $this->optionManagement) {
+            $this->optionManagement = \Magento\Framework\App\ObjectManager::getInstance()
+                ->get(\Magento\Catalog\Api\ProductAttributeOptionManagementInterface::class);
+        }
+        return $this->optionManagement;
     }
 }

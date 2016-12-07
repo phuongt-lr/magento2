@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Reports\Controller\Adminhtml\Report\Shopcart;
@@ -13,7 +13,7 @@ class Abandoned extends \Magento\Reports\Controller\Adminhtml\Report\Shopcart
      *
      * @return void
      */
-    public function executeInternal()
+    public function execute()
     {
         $this->_initAction()->_setActiveMenu(
             'Magento_Reports::report_shopcart_abandoned'
@@ -21,7 +21,7 @@ class Abandoned extends \Magento\Reports\Controller\Adminhtml\Report\Shopcart
             __('Abandoned Carts'),
             __('Abandoned Carts')
         )->_addContent(
-            $this->_view->getLayout()->createBlock('Magento\Reports\Block\Adminhtml\Shopcart\Abandoned')
+            $this->_view->getLayout()->createBlock(\Magento\Reports\Block\Adminhtml\Shopcart\Abandoned::class)
         );
         $this->_view->getPage()->getConfig()->getTitle()->prepend(__('Abandoned Carts'));
         $this->_view->renderLayout();

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\ImportExport\Model\Export;
@@ -20,7 +20,7 @@ abstract class AbstractEntity
     /**#@+
      * Attribute collection name
      */
-    const ATTRIBUTE_COLLECTION_NAME = 'Magento\Framework\Data\Collection';
+    const ATTRIBUTE_COLLECTION_NAME = \Magento\Framework\Data\Collection::class;
 
     /**#@-*/
 

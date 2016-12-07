@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Controller\Adminhtml\Group;
@@ -28,7 +28,7 @@ class NewAction extends \Magento\Customer\Controller\Adminhtml\Group
      *
      * @return \Magento\Backend\Model\View\Result\Page
      */
-    public function executeInternal()
+    public function execute()
     {
         $groupId = $this->_initGroup();
 
@@ -49,7 +49,7 @@ class NewAction extends \Magento\Customer\Controller\Adminhtml\Group
             );
         }
 
-        $resultPage->getLayout()->addBlock('Magento\Customer\Block\Adminhtml\Group\Edit', 'group', 'content')
+        $resultPage->getLayout()->addBlock(\Magento\Customer\Block\Adminhtml\Group\Edit::class, 'group', 'content')
             ->setEditMode((bool)$groupId);
 
         return $resultPage;

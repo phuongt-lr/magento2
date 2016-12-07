@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\ProductAlert\Controller\Add;
@@ -63,7 +63,7 @@ class Price extends AddController
     /**
      * @return \Magento\Framework\Controller\Result\Redirect
      */
-    public function executeInternal()
+    public function execute()
     {
         $backUrl = $this->getRequest()->getParam(Action::PARAM_NAME_URL_ENCODED);
         $productId = (int)$this->getRequest()->getParam('product_id');
@@ -78,12 +78,12 @@ class Price extends AddController
             /* @var $product \Magento\Catalog\Model\Product */
             $product = $this->productRepository->getById($productId);
             /** @var \Magento\ProductAlert\Model\Price $model */
-            $model = $this->_objectManager->create('Magento\ProductAlert\Model\Price')
+            $model = $this->_objectManager->create(\Magento\ProductAlert\Model\Price::class)
                 ->setCustomerId($this->customerSession->getCustomerId())
                 ->setProductId($product->getId())
                 ->setPrice($product->getFinalPrice())
                 ->setWebsiteId(
-                    $this->_objectManager->get('Magento\Store\Model\StoreManagerInterface')
+                    $this->_objectManager->get(\Magento\Store\Model\StoreManagerInterface::class)
                         ->getStore()
                         ->getWebsiteId()
                 );

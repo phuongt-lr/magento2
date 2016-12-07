@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -39,34 +39,36 @@ class AssertCatalogPriceRuleAppliedOnepageCheckout extends AbstractConstraint
         array $payment
     ) {
         $this->objectManager->create(
-            '\Magento\Customer\Test\TestStep\LoginCustomerOnFrontendStep',
+            \Magento\Customer\Test\TestStep\LoginCustomerOnFrontendStep::class,
             ['customer' => $customer]
         )->run();
         $this->objectManager->create(
-            '\Magento\Checkout\Test\TestStep\AddProductsToTheCartStep',
+            \Magento\Checkout\Test\TestStep\AddProductsToTheCartStep::class,
             ['products' => $products]
         )->run();
-        $this->objectManager->create('\Magento\Checkout\Test\TestStep\ProceedToCheckoutStep')->run();
+        $this->objectManager->create(\Magento\Checkout\Test\TestStep\ProceedToCheckoutStep::class)->run();
         $this->objectManager->create(
-            '\Magento\Checkout\Test\TestStep\FillBillingInformationStep',
+            \Magento\Checkout\Test\TestStep\FillBillingInformationStep::class,
             ['customer' => $customer, 'checkoutMethod' => 'register']
         )->run();
         $this->objectManager->create(
-            '\Magento\Checkout\Test\TestStep\FillShippingMethodStep',
+            \Magento\Checkout\Test\TestStep\FillShippingMethodStep::class,
             ['shipping' => $shipping]
         )->run();
         $this->objectManager->create(
-            '\Magento\Checkout\Test\TestStep\SelectPaymentMethodStep',
+            \Magento\Checkout\Test\TestStep\SelectPaymentMethodStep::class,
             ['payment' => $payment]
         )->run();
         $actualPrices['grand_total'] = $checkoutOnepage->getReviewBlock()->getGrandTotal();
         $actualPrices['sub_total'] = $checkoutOnepage->getReviewBlock()->getSubtotal();
-        $expectedPrices['grand_total'] = $cartPrice['grand_total'] + $cartPrice['shipping_price'];
+        $expectedPrices['grand_total'] = $cartPrice['grand_total'];
         $expectedPrices['sub_total'] = $cartPrice['sub_total'];
         \PHPUnit_Framework_Assert::assertEquals(
             $expectedPrices,
             $actualPrices,
             'Wrong total cart prices are displayed.'
+            . "\nExpected: " . implode(PHP_EOL, $expectedPrices)
+            . "\nActual: " . implode(PHP_EOL, $actualPrices) . "\n"
         );
     }
 

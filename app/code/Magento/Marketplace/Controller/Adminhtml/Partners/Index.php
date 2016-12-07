@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Marketplace\Controller\Adminhtml\Partners;
@@ -33,11 +33,11 @@ class Index extends \Magento\Marketplace\Controller\Adminhtml\Partners
     /**
      * @return \Magento\Backend\Model\View\Result\Page
      */
-    public function executeInternal()
+    public function execute()
     {
         if ($this->getRequest()->isAjax()) {
             $output = $this->getLayoutFactory()->create()
-                ->createBlock('Magento\Marketplace\Block\Partners')
+                ->createBlock(\Magento\Marketplace\Block\Partners::class)
                 ->toHtml();
             $this->getResponse()->appendBody($output);
         }

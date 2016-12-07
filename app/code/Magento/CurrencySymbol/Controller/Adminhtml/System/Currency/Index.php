@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CurrencySymbol\Controller\Adminhtml\System\Currency;
@@ -13,13 +13,13 @@ class Index extends \Magento\CurrencySymbol\Controller\Adminhtml\System\Currency
      *
      * @return void
      */
-    public function executeInternal()
+    public function execute()
     {
         $this->_view->loadLayout();
         $this->_setActiveMenu('Magento_CurrencySymbol::system_currency_rates');
         $this->_view->getPage()->getConfig()->getTitle()->prepend(__('Currency Rates'));
         $this->_addContent(
-            $this->_view->getLayout()->createBlock('Magento\CurrencySymbol\Block\Adminhtml\System\Currency')
+            $this->_view->getLayout()->createBlock(\Magento\CurrencySymbol\Block\Adminhtml\System\Currency::class)
         );
         $this->_view->renderLayout();
     }

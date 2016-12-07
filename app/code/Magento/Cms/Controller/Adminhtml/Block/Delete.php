@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Cms\Controller\Adminhtml\Block;
@@ -13,7 +13,7 @@ class Delete extends \Magento\Cms\Controller\Adminhtml\Block
      *
      * @return \Magento\Framework\Controller\ResultInterface
      */
-    public function executeInternal()
+    public function execute()
     {
         /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
@@ -22,7 +22,7 @@ class Delete extends \Magento\Cms\Controller\Adminhtml\Block
         if ($id) {
             try {
                 // init model and delete
-                $model = $this->_objectManager->create('Magento\Cms\Model\Block');
+                $model = $this->_objectManager->create(\Magento\Cms\Model\Block::class);
                 $model->load($id);
                 $model->delete();
                 // display success message

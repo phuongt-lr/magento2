@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Tax\Model\Quote;
@@ -71,17 +71,18 @@ class GrandTotalDetailsPlugin
 
     /**
      * @param \Magento\Quote\Model\Cart\TotalsConverter $subject
-     * @param \Closure $proceed
+     * @param \Magento\Quote\Api\Data\TotalSegmentInterface[] $totalSegments
      * @param \Magento\Quote\Model\Quote\Address\Total[] $addressTotals
+     *
      * @return \Magento\Quote\Api\Data\TotalSegmentInterface[]
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
-    public function aroundProcess(
+    public function afterProcess(
         \Magento\Quote\Model\Cart\TotalsConverter $subject,
-        \Closure $proceed,
+        array $totalSegments,
         array $addressTotals = []
     ) {
-        $totalSegments = $proceed($addressTotals);
 
         if (!array_key_exists($this->code, $addressTotals)) {
             return $totalSegments;
@@ -94,7 +95,11 @@ class GrandTotalDetailsPlugin
 
         $detailsId = 1;
         $finalData = [];
-        foreach (unserialize($taxes['full_info']) as $info) {
+        $fullInfo = $taxes['full_info'];
+        if (is_string($fullInfo)) {
+            $fullInfo = unserialize($fullInfo);
+        }
+        foreach ($fullInfo as $info) {
             if ((array_key_exists('hidden', $info) && $info['hidden'])
                 || ($info['amount'] == 0 && $this->taxConfig->displayCartZeroTax())
             ) {

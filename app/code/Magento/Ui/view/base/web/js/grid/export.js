@@ -1,5 +1,5 @@
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define([
@@ -12,7 +12,9 @@ define([
     return Element.extend({
         defaults: {
             template: 'ui/grid/exportButton',
+            selectProvider: 'ns = ${ $.ns }, index = ids',
             checked: '',
+            additionalParams: [],
             modules: {
                 selections: '${ $.selectProvider }'
             }
@@ -21,6 +23,18 @@ define([
         initialize: function () {
             this._super()
                 .initChecked();
+        },
+
+        /** @inheritdoc */
+        initConfig: function () {
+            this._super();
+
+            _.each(this.additionalParams, function (value, key) {
+                key = 'additionalParams.' + key;
+                this.imports[key] = value;
+            }, this);
+
+            return this;
         },
 
         initObservable: function () {
@@ -36,23 +50,31 @@ define([
                     this.options[0].value
                 );
             }
+
             return this;
         },
 
         getParams: function () {
             var selections = this.selections(),
-                data = selections.getSelections(),
-                itemsType = data.excludeMode ? 'excluded' : 'selected',
+                data = selections ? selections.getSelections() : null,
+                itemsType,
                 result = {};
 
-            result['filters'] = data.params.filters;
-            result['search'] = data.params.search;
-            result['namespace'] = data.params.namespace;
-            result[itemsType] = data[itemsType];
+            if (data) {
+                itemsType = data.excludeMode ? 'excluded' : 'selected';
+                result.filters = data.params.filters;
+                result.search = data.params.search;
+                result.namespace = data.params.namespace;
+                result[itemsType] = data[itemsType];
+                _.each(this.additionalParams, function (param, key) {
+                    result[key] = param;
+                });
 
-            if (!result[itemsType].length) {
-                result[itemsType] = false;
+                if (!result[itemsType].length) {
+                    result[itemsType] = false;
+                }
             }
+
             return result;
         },
 
@@ -63,9 +85,14 @@ define([
         },
 
         buildOptionUrl: function (option) {
-            var url = option.url + '?';
+            var params = this.getParams();
 
-            return url + $.param(this.getParams());
+            if (!params) {
+                return 'javascript:void(0);';
+            }
+
+            return option.url + '?' + $.param(params);
+            //TODO: MAGETWO-40250
         },
 
         applyOption: function () {
@@ -73,6 +100,7 @@ define([
                 url = this.buildOptionUrl(option);
 
             location.href = url;
+
         }
     });
 });

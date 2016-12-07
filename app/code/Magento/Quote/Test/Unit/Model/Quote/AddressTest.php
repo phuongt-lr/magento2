@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -36,15 +36,15 @@ class AddressTest extends \PHPUnit_Framework_TestCase
     {
         $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->scopeConfig = $this->getMock('Magento\Framework\App\Config', [], [], '', false);
+        $this->scopeConfig = $this->getMock(\Magento\Framework\App\Config::class, [], [], '', false);
 
         $this->address = $objectManager->getObject(
-                'Magento\Quote\Model\Quote\Address',
-                [
-                    'scopeConfig' => $this->scopeConfig
-                ]
-            );
-        $this->quote = $this->getMock('Magento\Quote\Model\Quote', [], [], '', false);
+            \Magento\Quote\Model\Quote\Address::class,
+            [
+                'scopeConfig' => $this->scopeConfig
+            ]
+        );
+        $this->quote = $this->getMock(\Magento\Quote\Model\Quote::class, [], [], '', false);
         $this->address->setQuote($this->quote);
     }
 

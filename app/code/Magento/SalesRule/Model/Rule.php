@@ -1,10 +1,12 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\SalesRule\Model;
 
+use Magento\Framework\Api\AttributeValueFactory;
+use Magento\Framework\Api\ExtensionAttributesFactory;
 use Magento\Quote\Model\Quote\Address;
 
 /**
@@ -16,9 +18,7 @@ use Magento\Quote\Model\Quote\Address;
  * @method \Magento\SalesRule\Model\Rule setName(string $value)
  * @method string getDescription()
  * @method \Magento\SalesRule\Model\Rule setDescription(string $value)
- * @method string getFromDate()
  * @method \Magento\SalesRule\Model\Rule setFromDate(string $value)
- * @method string getToDate()
  * @method \Magento\SalesRule\Model\Rule setToDate(string $value)
  * @method int getUsesPerCustomer()
  * @method \Magento\SalesRule\Model\Rule setUsesPerCustomer(int $value)
@@ -173,19 +173,24 @@ class Rule extends \Magento\Rule\Model\AbstractModel
     protected $_storeManager;
 
     /**
+     * Rule constructor
+     *
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\Data\FormFactory $formFactory
      * @param \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate
-     * @param \Magento\SalesRule\Model\CouponFactory $couponFactory
-     * @param \Magento\SalesRule\Model\Coupon\CodegeneratorFactory $codegenFactory
-     * @param \Magento\SalesRule\Model\Rule\Condition\CombineFactory $condCombineFactory
-     * @param \Magento\SalesRule\Model\Rule\Condition\Product\CombineFactory $condProdCombineF
-     * @param \Magento\SalesRule\Model\ResourceModel\Coupon\Collection $couponCollection
+     * @param CouponFactory $couponFactory
+     * @param Coupon\CodegeneratorFactory $codegenFactory
+     * @param Rule\Condition\CombineFactory $condCombineFactory
+     * @param Rule\Condition\Product\CombineFactory $condProdCombineF
+     * @param ResourceModel\Coupon\Collection $couponCollection
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
-     * @param \Magento\Framework\Model\ResourceModel\AbstractResource $resource
-     * @param \Magento\Framework\Data\Collection\AbstractDb $resourceCollection
+     * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
+     * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
      * @param array $data
+     * @param ExtensionAttributesFactory|null $extensionFactory
+     * @param AttributeValueFactory|null $customAttributeFactory
+     *
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -201,7 +206,9 @@ class Rule extends \Magento\Rule\Model\AbstractModel
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
-        array $data = []
+        array $data = [],
+        ExtensionAttributesFactory $extensionFactory = null,
+        AttributeValueFactory $customAttributeFactory = null
     ) {
         $this->_couponFactory = $couponFactory;
         $this->_codegenFactory = $codegenFactory;
@@ -209,7 +216,17 @@ class Rule extends \Magento\Rule\Model\AbstractModel
         $this->_condProdCombineF = $condProdCombineF;
         $this->_couponCollection = $couponCollection;
         $this->_storeManager = $storeManager;
-        parent::__construct($context, $registry, $formFactory, $localeDate, $resource, $resourceCollection, $data);
+        parent::__construct(
+            $context,
+            $registry,
+            $formFactory,
+            $localeDate,
+            $resource,
+            $resourceCollection,
+            $data,
+            $extensionFactory,
+            $customAttributeFactory
+        );
     }
 
     /**
@@ -220,7 +237,7 @@ class Rule extends \Magento\Rule\Model\AbstractModel
     protected function _construct()
     {
         parent::_construct();
-        $this->_init('Magento\SalesRule\Model\ResourceModel\Rule');
+        $this->_init(\Magento\SalesRule\Model\ResourceModel\Rule::class);
         $this->setIdFieldName('rule_id');
     }
 
@@ -519,6 +536,22 @@ class Rule extends \Magento\Rule\Model\AbstractModel
     }
 
     /**
+     * @return string
+     */
+    public function getFromDate()
+    {
+        return $this->getData('from_date');
+    }
+
+    /**
+     * @return string
+     */
+    public function getToDate()
+    {
+        return $this->getData('to_date');
+    }
+
+    /**
      * Check cached validation result for specific address
      *
      * @param Address $address
@@ -569,5 +602,23 @@ class Rule extends \Magento\Rule\Model\AbstractModel
             return $address->getId();
         }
         return $address;
+    }
+
+    /**
+     * @param string $formName
+     * @return string
+     */
+    public function getConditionsFieldSetId($formName = '')
+    {
+        return $formName . 'rule_conditions_fieldset_' . $this->getId();
+    }
+
+    /**
+     * @param string $formName
+     * @return string
+     */
+    public function getActionsFieldSetId($formName = '')
+    {
+        return $formName . 'rule_actions_fieldset_' . $this->getId();
     }
 }

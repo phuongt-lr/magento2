@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Paypal\Controller\Billing;
@@ -37,15 +37,15 @@ abstract class Agreement extends \Magento\Framework\App\Action\Action
      * @param RequestInterface $request
      * @return \Magento\Framework\App\ResponseInterface
      */
-    public function execute(RequestInterface $request)
+    public function dispatch(RequestInterface $request)
     {
         if (!$request->isDispatched()) {
-            return parent::execute($request);
+            return parent::dispatch($request);
         }
         if (!$this->_getSession()->authenticate()) {
             $this->_actionFlag->set('', 'no-dispatch', true);
         }
-        return parent::execute($request);
+        return parent::dispatch($request);
     }
 
     /**
@@ -58,7 +58,7 @@ abstract class Agreement extends \Magento\Framework\App\Action\Action
         $agreementId = $this->getRequest()->getParam('agreement');
         if ($agreementId) {
             /** @var \Magento\Paypal\Model\Billing\Agreement $billingAgreement */
-            $billingAgreement = $this->_objectManager->create('Magento\Paypal\Model\Billing\Agreement')
+            $billingAgreement = $this->_objectManager->create(\Magento\Paypal\Model\Billing\Agreement::class)
                 ->load($agreementId);
             $currentCustomerId = $this->_getSession()->getCustomerId();
             $agreementCustomerId = $billingAgreement->getCustomerId();
@@ -81,6 +81,6 @@ abstract class Agreement extends \Magento\Framework\App\Action\Action
      */
     protected function _getSession()
     {
-        return $this->_objectManager->get('Magento\Customer\Model\Session');
+        return $this->_objectManager->get(\Magento\Customer\Model\Session::class);
     }
 }

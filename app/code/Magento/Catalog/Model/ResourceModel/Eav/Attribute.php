@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -164,7 +164,7 @@ class Attribute extends \Magento\Eav\Model\Entity\Attribute implements
      */
     protected function _construct()
     {
-        $this->_init('Magento\Catalog\Model\ResourceModel\Attribute');
+        $this->_init(\Magento\Catalog\Model\ResourceModel\Attribute::class);
     }
 
     /**
@@ -193,7 +193,7 @@ class Attribute extends \Magento\Eav\Model\Entity\Attribute implements
         }
         if ($this->getFrontendInput() == 'price') {
             if (!$this->getBackendModel()) {
-                $this->setBackendModel('Magento\Catalog\Model\Product\Attribute\Backend\Price');
+                $this->setBackendModel(\Magento\Catalog\Model\Product\Attribute\Backend\Price::class);
             }
         }
         if ($this->getFrontendInput() == 'textarea') {
@@ -351,14 +351,11 @@ class Attribute extends \Magento\Eav\Model\Entity\Attribute implements
      */
     public function getApplyTo()
     {
-        if ($this->getData(self::APPLY_TO)) {
-            if (is_array($this->getData(self::APPLY_TO))) {
-                return $this->getData(self::APPLY_TO);
-            }
-            return explode(',', $this->getData(self::APPLY_TO));
-        } else {
-            return [];
+        $applyTo = $this->_getData(self::APPLY_TO) ?: [];
+        if (!is_array($applyTo)) {
+            $applyTo = explode(',', $applyTo);
         }
+        return $applyTo;
     }
 
     /**
@@ -405,7 +402,7 @@ class Attribute extends \Magento\Eav\Model\Entity\Attribute implements
      */
     public function _getDefaultSourceModel()
     {
-        return 'Magento\Eav\Model\Entity\Attribute\Source\Table';
+        return \Magento\Eav\Model\Entity\Attribute\Source\Table::class;
     }
 
     /**
@@ -817,5 +814,32 @@ class Attribute extends \Magento\Eav\Model\Entity\Attribute implements
     {
         $this->_eavConfig->clear();
         return parent::afterDelete();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function __sleep()
+    {
+        $this->unsetData('entity_type');
+        return array_diff(
+            parent::__sleep(),
+            ['_indexerEavProcessor', '_productFlatIndexerProcessor', '_productFlatIndexerHelper', 'attrLockValidator']
+        );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function __wakeup()
+    {
+        parent::__wakeup();
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $this->_indexerEavProcessor = $objectManager->get(\Magento\Catalog\Model\Indexer\Product\Flat\Processor::class);
+        $this->_productFlatIndexerProcessor = $objectManager->get(
+            \Magento\Catalog\Model\Indexer\Product\Eav\Processor::class
+        );
+        $this->_productFlatIndexerHelper = $objectManager->get(\Magento\Catalog\Helper\Product\Flat\Indexer::class);
+        $this->attrLockValidator = $objectManager->get(LockValidatorInterface::class);
     }
 }

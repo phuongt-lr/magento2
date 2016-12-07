@@ -1,6 +1,6 @@
 // jscs:disable requireDotNotation
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define([
@@ -8,7 +8,8 @@ define([
     'jquery',
     'Magento_Ui/js/core/app',
     'underscore',
-    'notification'
+    'notification',
+    'mage/translate'
 ], function (Component, $, bootstrap, _) {
     'use strict';
 
@@ -135,7 +136,7 @@ define([
          */
         close: function (rowIndex) {
             try {
-                if (this.productsMassAction().selected.length) {
+                if (this.productsMassAction().selected.getLength()) {
                     this.variationsComponent()[this.callbackName](this.productsMassAction()
                         .selected.map(this.getProductById.bind(this)));
                     this.productsMassAction().deselectAll();
@@ -221,9 +222,7 @@ define([
 
             if (data.items.length) {
                 this.productsModal.notification('add', {
-                    message: $.mage.__(
-                        'Choose a new product to delete and replace the current product configuration.'
-                    ),
+                    message: $.mage.__('Choose a new product to delete and replace the current product configuration.'),
                     messageContainer: this.gridSelector
                 });
             } else {
@@ -245,7 +244,7 @@ define([
                 }),
                 usedProductIds = _.values(this.variationsComponent().productAttributesMap);
 
-            if (usedProductIds) {
+            if (usedProductIds && usedProductIds.length > 0) {
                 filterModifier['entity_id'] = {
                     'condition_type': 'nin', value: usedProductIds
                 };

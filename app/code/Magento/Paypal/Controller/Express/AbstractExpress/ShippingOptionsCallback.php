@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Paypal\Controller\Express\AbstractExpress;
@@ -53,7 +53,7 @@ class ShippingOptionsCallback extends \Magento\Paypal\Controller\Express\Abstrac
      *
      * @return void
      */
-    public function executeInternal()
+    public function execute()
     {
         try {
             $quoteId = $this->getRequest()->getParam('quote_id');
@@ -62,7 +62,7 @@ class ShippingOptionsCallback extends \Magento\Paypal\Controller\Express\Abstrac
             $response = $this->_checkout->getShippingOptionsCallbackResponse($this->getRequest()->getParams());
             $this->getResponse()->setBody($response);
         } catch (\Exception $e) {
-            $this->_objectManager->get('Psr\Log\LoggerInterface')->critical($e);
+            $this->_objectManager->get(\Psr\Log\LoggerInterface::class)->critical($e);
         }
     }
 }

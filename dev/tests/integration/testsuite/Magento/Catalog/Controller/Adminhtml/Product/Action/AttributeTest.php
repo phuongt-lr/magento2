@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Controller\Adminhtml\Product\Action;
@@ -11,7 +11,7 @@ namespace Magento\Catalog\Controller\Adminhtml\Product\Action;
 class AttributeTest extends \Magento\TestFramework\TestCase\AbstractBackendController
 {
     /**
-     * @covers \Magento\Catalog\Controller\Adminhtml\Product\Action\Attribute\Save::executeInternal
+     * @covers \Magento\Catalog\Controller\Adminhtml\Product\Action\Attribute\Save::execute
      *
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      */
@@ -20,17 +20,17 @@ class AttributeTest extends \Magento\TestFramework\TestCase\AbstractBackendContr
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 
         /** @var $session \Magento\Backend\Model\Session */
-        $session = $objectManager->get('Magento\Backend\Model\Session');
+        $session = $objectManager->get(\Magento\Backend\Model\Session::class);
         $session->setProductIds([1]);
 
         $this->dispatch('backend/catalog/product_action_attribute/save/store/0');
 
         $this->assertEquals(302, $this->getResponse()->getHttpResponseCode());
         /** @var \Magento\Backend\Model\UrlInterface $urlBuilder */
-        $urlBuilder = $objectManager->get('Magento\Framework\UrlInterface');
+        $urlBuilder = $objectManager->get(\Magento\Framework\UrlInterface::class);
 
         /** @var \Magento\Catalog\Helper\Product\Edit\Action\Attribute $attributeHelper */
-        $attributeHelper = $objectManager->get('Magento\Catalog\Helper\Product\Edit\Action\Attribute');
+        $attributeHelper = $objectManager->get(\Magento\Catalog\Helper\Product\Edit\Action\Attribute::class);
         $expectedUrl = $urlBuilder->getUrl(
             'catalog/product/index',
             ['store' => $attributeHelper->getSelectedStoreId()]
@@ -46,7 +46,7 @@ class AttributeTest extends \Magento\TestFramework\TestCase\AbstractBackendContr
     }
 
     /**
-     * @covers \Magento\Catalog\Controller\Adminhtml\Product\Action\Attribute\Validate::executeInternal
+     * @covers \Magento\Catalog\Controller\Adminhtml\Product\Action\Attribute\Validate::execute
      *
      * @dataProvider validateActionDataProvider
      *
@@ -58,7 +58,7 @@ class AttributeTest extends \Magento\TestFramework\TestCase\AbstractBackendContr
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 
         /** @var $session \Magento\Backend\Model\Session */
-        $session = $objectManager->get('Magento\Backend\Model\Session');
+        $session = $objectManager->get(\Magento\Backend\Model\Session::class);
         $session->setProductIds([1, 2]);
 
         $this->getRequest()->setParam('attributes', $attributes);

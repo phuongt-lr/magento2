@@ -1,5 +1,5 @@
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define(["prototype"], function(){
@@ -230,7 +230,7 @@ Packaging.prototype = {
 
     validate: function() {
         var dimensionElements = $("packaging_window").select(
-            'input[name=container_length],input[name=container_width],input[name=container_height]'
+            'input[name=container_length],input[name=container_width],input[name=container_height],input[name=container_girth]:not("._disabled")'
         );
         var callback = null;
         if ( dimensionElements.any(function(element) { return !!element.value; })) {
@@ -353,7 +353,7 @@ Packaging.prototype = {
                     var response = transport.responseText;
                     if (response) {
                         packagePrapareGrid.update(response);
-                        this._processPackagePrapare(packagePrapareGrid);
+                        this.processPackagePrepare(packagePrapareGrid);
                         if (packagePrapareGrid.select('.grid tbody tr').length) {
                             packageBlock.select('[data-action=package-add-items]')[0].hide();
                             packageBlock.select('[data-action=package-save-items]')[0].show();
@@ -543,8 +543,7 @@ Packaging.prototype = {
             return;
         }
 
-        var girthEnabled = (packageSize[0].value == 'LARGE' && (packageContainer[0].value == 'NONRECTANGULAR'
-            || packageContainer[0].value == 'VARIABLE' ));
+        var girthEnabled = packageContainer[0].value == 'NONRECTANGULAR' || packageContainer[0].value == 'VARIABLE';
 
         if (!girthEnabled) {
             packageGirth[0].value='';
@@ -693,22 +692,27 @@ Packaging.prototype = {
         }
     },
 
-    _processPackagePrapare: function(packagePrapare) {
-        var itemsAll = [];
-        packagePrapare.select('.grid tbody tr').each(function(item) {
-            var qty  = item.select('[name="qty"]')[0];
-            var itemId = item.select('[type="checkbox"]')[0].value;
-            var qtyValue = 0;
+    processPackagePrepare: function(packagePrepare) {
+        var itemsAll = [],
+            qty,
+            itemId,
+            qtyValue = 0,
+            value = 1;
+
+        packagePrepare.select('.grid tbody tr').each(function(item) {
+            qty = item.select('[name="qty"]')[0],
+                itemId = item.select('[type="checkbox"]')[0].value,
+                qtyValue = parseFloat(qty.value);
+
             if (Object.isFunction(this.itemQtyCallback)) {
-                var value = this.itemQtyCallback(itemId);
-                qtyValue = ((typeof value == 'string') && (value.length == 0)) ? 0 : parseFloat(value);
-                if (isNaN(qtyValue) || qtyValue < 0) {
-                    qtyValue = 1;
+                value = this.itemQtyCallback(itemId);
+                if (typeof value !== 'undefined') {
+                    qtyValue = parseFloat(value);
+                    qtyValue = this.validateItemQty(itemId, qtyValue);
+                    qty.value = qtyValue;
                 }
-                qtyValue = this.validateItemQty(itemId, qtyValue);
-                qty.value = qtyValue;
             } else {
-                var value = item.select('[name="qty"]')[0].value;
+                value = item.select('[name="qty"]')[0].value;
                 qtyValue = ((typeof value == 'string') && (value.length == 0)) ? 0 : parseFloat(value);
                 if (isNaN(qtyValue) || qtyValue < 0) {
                     qtyValue = 1;
@@ -728,7 +732,7 @@ Packaging.prototype = {
                             item.remove();
                         } else if (qtyValue > packedQty) {
                             /* fix float number precision */
-                            qty.value = Number((qtyValue - packedQty).toFixed(4));
+                            qty.value = Number(Number(Math.round((qtyValue - packedQty) + "e+4") + "e-4").toFixed(4));
                         }
                     }
                 }
@@ -738,10 +742,10 @@ Packaging.prototype = {
             this.itemsAll = itemsAll;
         }
 
-        packagePrapare.select('tbody input[type="checkbox"]').each(function(item){
+        packagePrepare.select('tbody input[type="checkbox"]').each(function(item){
             $(item).observe('change', this._observeQty);
             this._observeQty.call(item);
-        }.bind(this))
+        }.bind(this));
     },
 
     _observeQty: function() {
@@ -786,8 +790,8 @@ Packaging.prototype = {
             containerCustomsValue.value = parseFloat(containerCustomsValue.value) + itemCustomsValue * qtyValue;
             this.packages[packageId]['items'][itemId]['customs_value'] = itemCustomsValue;
         }.bind(this));
-        containerWeight.value = parseFloat(parseFloat(containerWeight.value).toFixed(4));
-        containerCustomsValue.value = parseFloat(containerCustomsValue.value).toFixed(2);
+        containerWeight.value = parseFloat(parseFloat(Math.round(containerWeight.value + "e+4") + "e-4").toFixed(4));
+        containerCustomsValue.value = parseFloat(Math.round(containerCustomsValue.value + "e+2") + "e-2").toFixed(2);
         if (containerCustomsValue.value == 0) {
             containerCustomsValue.value = '';
         }

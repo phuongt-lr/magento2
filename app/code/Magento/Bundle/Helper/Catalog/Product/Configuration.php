@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Bundle\Helper\Catalog\Product;
@@ -142,6 +142,7 @@ class Configuration extends AbstractHelper implements ConfigurationInterface
                                     . $this->pricingHelper->currency(
                                         $this->getSelectionFinalPrice($item, $bundleSelection)
                                     );
+                                $option['has_html'] = true;
                             }
                         }
 

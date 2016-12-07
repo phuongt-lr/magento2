@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
  -->
@@ -15,7 +15,7 @@
             <data name="product/data/checkout_data/cartItem/subtotal" xsi:type="string">300</data>
             <constraint name="Magento\Checkout\Test\Constraint\AssertPriceInShoppingCart" />
             <constraint name="Magento\Checkout\Test\Constraint\AssertProductQtyInShoppingCart" />
-            <constraint name="Magento\Checkout\Test\Constraint\AssertProductQtyInMiniShoppingCart" />
+            <constraint name="Magento\Checkout\Test\Constraint\AssertProductDataInMiniShoppingCart" />
             <constraint name="Magento\Checkout\Test\Constraint\AssertSubtotalInShoppingCart" />
         </variation>
         <variation name="UpdateShoppingCartTestVariation2">
@@ -26,7 +26,7 @@
             <data name="product/data/checkout_data/cartItem/subtotal" xsi:type="string">715</data>
             <constraint name="Magento\Checkout\Test\Constraint\AssertPriceInShoppingCart" />
             <constraint name="Magento\Checkout\Test\Constraint\AssertProductQtyInShoppingCart" />
-            <constraint name="Magento\Checkout\Test\Constraint\AssertProductQtyInMiniShoppingCart" />
+            <constraint name="Magento\Checkout\Test\Constraint\AssertProductDataInMiniShoppingCart" />
             <constraint name="Magento\Checkout\Test\Constraint\AssertSubtotalInShoppingCart" />
         </variation>
     </testCase>

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Captcha\Test\Unit\Model\Customer\Plugin;
@@ -54,19 +54,25 @@ class AjaxLoginTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->sessionManagerMock = $this->getMock('Magento\Checkout\Model\Session', ['setUsername'], [], '', false);
-        $this->captchaHelperMock = $this->getMock('Magento\Captcha\Helper\Data', [], [], '', false);
-        $this->captchaMock = $this->getMock('Magento\Captcha\Model\DefaultModel', [], [], '', false);
+        $this->sessionManagerMock = $this->getMock(
+            \Magento\Checkout\Model\Session::class,
+            ['setUsername'],
+            [],
+            '',
+            false
+        );
+        $this->captchaHelperMock = $this->getMock(\Magento\Captcha\Helper\Data::class, [], [], '', false);
+        $this->captchaMock = $this->getMock(\Magento\Captcha\Model\DefaultModel::class, [], [], '', false);
         $this->jsonFactoryMock = $this->getMock(
-            'Magento\Framework\Controller\Result\JsonFactory',
+            \Magento\Framework\Controller\Result\JsonFactory::class,
             ['create'],
             [],
             '',
             false
         );
-        $this->resultJsonMock = $this->getMock('Magento\Framework\Controller\Result\Json', [], [], '', false);
-        $this->requestMock = $this->getMock('Magento\Framework\App\Request\Http', [], [], '', false);
-        $this->loginControllerMock = $this->getMock('Magento\Customer\Controller\Ajax\Login', [], [], '', false);
+        $this->resultJsonMock = $this->getMock(\Magento\Framework\Controller\Result\Json::class, [], [], '', false);
+        $this->requestMock = $this->getMock(\Magento\Framework\App\Request\Http::class, [], [], '', false);
+        $this->loginControllerMock = $this->getMock(\Magento\Customer\Controller\Ajax\Login::class, [], [], '', false);
 
         $this->loginControllerMock->expects($this->any())->method('getRequest')
             ->will($this->returnValue($this->requestMock));
@@ -82,7 +88,7 @@ class AjaxLoginTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testAroundExecuteInternal()
+    public function testAroundExecute()
     {
         $username = 'name';
         $captchaString = 'string';
@@ -102,10 +108,10 @@ class AjaxLoginTest extends \PHPUnit_Framework_TestCase
         $closure = function () {
             return 'result';
         };
-        $this->assertEquals('result', $this->model->aroundExecuteInternal($this->loginControllerMock, $closure));
+        $this->assertEquals('result', $this->model->aroundExecute($this->loginControllerMock, $closure));
     }
 
-    public function testAroundExecuteInternalIncorrectCaptcha()
+    public function testAroundExecuteIncorrectCaptcha()
     {
         $username = 'name';
         $captchaString = 'string';
@@ -131,15 +137,15 @@ class AjaxLoginTest extends \PHPUnit_Framework_TestCase
 
         $closure = function () {
         };
-        $this->assertEquals('response', $this->model->aroundExecuteInternal($this->loginControllerMock, $closure));
+        $this->assertEquals('response', $this->model->aroundExecute($this->loginControllerMock, $closure));
     }
 
     /**
-     * @dataProvider aroundExecuteInternalCaptchaIsNotRequired
+     * @dataProvider aroundExecuteCaptchaIsNotRequired
      * @param string $username
      * @param array $requestContent
      */
-    public function testAroundExecuteInternalCaptchaIsNotRequired($username, $requestContent)
+    public function testAroundExecuteCaptchaIsNotRequired($username, $requestContent)
     {
         $this->requestMock->expects($this->once())->method('getContent')->will($this->returnValue($requestContent));
 
@@ -151,13 +157,13 @@ class AjaxLoginTest extends \PHPUnit_Framework_TestCase
         $closure = function () {
             return 'result';
         };
-        $this->assertEquals('result', $this->model->aroundExecuteInternal($this->loginControllerMock, $closure));
+        $this->assertEquals('result', $this->model->aroundExecute($this->loginControllerMock, $closure));
     }
 
     /**
      * @return array
      */
-    public function aroundExecuteInternalCaptchaIsNotRequired()
+    public function aroundExecuteCaptchaIsNotRequired()
     {
         return [
             [

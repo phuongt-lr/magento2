@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\CatalogSearch\Controller\Result;
@@ -65,7 +65,7 @@ class Index extends \Magento\Framework\App\Action\Action
      *
      * @return void
      */
-    public function executeInternal()
+    public function execute()
     {
         $this->layerResolver->create(Resolver::CATALOG_LAYER_SEARCH);
         /* @var $query \Magento\Search\Model\Query */
@@ -74,18 +74,19 @@ class Index extends \Magento\Framework\App\Action\Action
         $query->setStoreId($this->_storeManager->getStore()->getId());
 
         if ($query->getQueryText() != '') {
-            if ($this->_objectManager->get('Magento\CatalogSearch\Helper\Data')->isMinQueryLength()) {
+            if ($this->_objectManager->get(\Magento\CatalogSearch\Helper\Data::class)->isMinQueryLength()) {
                 $query->setId(0)->setIsActive(1)->setIsProcessed(1);
             } else {
                 $query->saveIncrementalPopularity();
 
-                if ($query->getRedirect()) {
-                    $this->getResponse()->setRedirect($query->getRedirect());
+                $redirect = $query->getRedirect();
+                if ($redirect && $this->_url->getCurrentUrl() !== $redirect) {
+                    $this->getResponse()->setRedirect($redirect);
                     return;
                 }
             }
 
-            $this->_objectManager->get('Magento\CatalogSearch\Helper\Data')->checkNotes();
+            $this->_objectManager->get(\Magento\CatalogSearch\Helper\Data::class)->checkNotes();
 
             $this->_view->loadLayout();
             $this->_view->renderLayout();

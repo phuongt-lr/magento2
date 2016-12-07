@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Catalog\Model\Product\Attribute\Backend;
@@ -20,11 +20,11 @@ class PriceTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->_model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
-            'Magento\Catalog\Model\Product\Attribute\Backend\Price'
+            \Magento\Catalog\Model\Product\Attribute\Backend\Price::class
         );
         $this->_model->setAttribute(
             \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
-                'Magento\Eav\Model\Config'
+                \Magento\Eav\Model\Config::class
             )->getAttribute(
                 'catalog_product',
                 'price'
@@ -64,11 +64,10 @@ class PriceTest extends \PHPUnit_Framework_TestCase
      */
     public function testAfterSave()
     {
-        /** @var $product \Magento\Catalog\Model\Product */
-        $product = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
-            'Magento\Catalog\Model\Product'
+        $repository = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
+            \Magento\Catalog\Model\ProductRepository::class
         );
-        $product->load(1);
+        $product = $repository->get('simple');
         $product->setOrigData();
         $product->setPrice(9.99);
         $product->setStoreId(0);
@@ -79,7 +78,7 @@ class PriceTest extends \PHPUnit_Framework_TestCase
                 $product->getId(),
                 $this->_model->getAttribute()->getId(),
                 \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
-                    'Magento\Store\Model\StoreManagerInterface'
+                    \Magento\Store\Model\StoreManagerInterface::class
                 )->getStore()->getId()
             )
         );

@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!--
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 -->
@@ -16,6 +16,9 @@
         </dataset>
         <dataset name="MAGETWO-12620">
             <field name="category_price" xsi:type="string">11</field>
+        </dataset>
+        <dataset name="from-9">
+            <field name="price_from" xsi:type="string">9</field>
         </dataset>
     </repository>
 </config>

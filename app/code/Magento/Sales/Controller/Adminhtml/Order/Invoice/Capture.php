@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Sales\Controller\Adminhtml\Order\Invoice;
@@ -13,7 +13,7 @@ class Capture extends \Magento\Sales\Controller\Adminhtml\Invoice\AbstractInvoic
      *
      * @return \Magento\Framework\Controller\ResultInterface
      */
-    public function executeInternal()
+    public function execute()
     {
         $invoice = $this->getInvoice();
         if (!$invoice) {
@@ -23,11 +23,11 @@ class Capture extends \Magento\Sales\Controller\Adminhtml\Invoice\AbstractInvoic
             return $resultForward;
         }
         try {
-            $invoiceManagement = $this->_objectManager->get('Magento\Sales\Api\InvoiceManagementInterface');
+            $invoiceManagement = $this->_objectManager->get(\Magento\Sales\Api\InvoiceManagementInterface::class);
             $invoiceManagement->setCapture($invoice->getEntityId());
             $invoice->getOrder()->setIsInProcess(true);
             $this->_objectManager->create(
-                'Magento\Framework\DB\Transaction'
+                \Magento\Framework\DB\Transaction::class
             )->addObject(
                 $invoice
             )->addObject(

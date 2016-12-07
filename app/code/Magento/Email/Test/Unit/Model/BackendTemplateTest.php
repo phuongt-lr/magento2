@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -12,6 +12,7 @@
 namespace Magento\Email\Test\Unit\Model;
 
 use Magento\Email\Model\BackendTemplate;
+use Magento\Framework\ObjectManagerInterface;
 
 class BackendTemplateTest extends \PHPUnit_Framework_TestCase
 {
@@ -46,30 +47,31 @@ class BackendTemplateTest extends \PHPUnit_Framework_TestCase
     {
         $helper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->scopeConfigMock = $this->getMock('Magento\Framework\App\Config\ScopeConfigInterface');
+        $this->scopeConfigMock = $this->getMock(\Magento\Framework\App\Config\ScopeConfigInterface::class);
         $this->scopeConfigMock->expects($this->any())->method('getValue')->willReturn(['test' => 1]);
 
-        $this->structureMock = $this->getMock('Magento\Config\Model\Config\Structure', [], [], '', false);
+        $this->structureMock = $this->getMock(\Magento\Config\Model\Config\Structure::class, [], [], '', false);
         $this->structureMock->expects($this->any())->method('getFieldPathsByAttribute')->willReturn(['path' => 'test']);
 
-        $this->resourceModelMock = $this->getMock('Magento\Email\Model\ResourceModel\Template', [], [], '', false);
+        $this->resourceModelMock = $this->getMock(
+            \Magento\Email\Model\ResourceModel\Template::class,
+            [],
+            [],
+            '',
+            false
+        );
         $this->resourceModelMock->expects($this->any())->method('getSystemConfigByPathsAndTemplateId')->willReturn(['test_config' => 2015]);
-        $objectManagerMock = $this->getMock('Magento\Framework\ObjectManagerInterface');
+        /** @var ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject $objectManagerMock*/
+        $objectManagerMock = $this->getMock(\Magento\Framework\ObjectManagerInterface::class);
         $objectManagerMock->expects($this->any())
             ->method('get')
-            ->with('Magento\Email\Model\ResourceModel\Template')
+            ->with(\Magento\Email\Model\ResourceModel\Template::class)
             ->will($this->returnValue($this->resourceModelMock));
 
-        try {
-            $this->objectManagerBackup = \Magento\Framework\App\ObjectManager::getInstance();
-        } catch (\RuntimeException $e) {
-            $this->objectManagerBackup = \Magento\Framework\App\Bootstrap::createObjectManagerFactory(BP, $_SERVER)
-                ->create($_SERVER);
-        }
         \Magento\Framework\App\ObjectManager::setInstance($objectManagerMock);
 
         $this->model = $helper->getObject(
-            'Magento\Email\Model\BackendTemplate',
+            \Magento\Email\Model\BackendTemplate::class,
             ['scopeConfig' => $this->scopeConfigMock, 'structure' => $this->structureMock]
         );
     }
@@ -77,7 +79,9 @@ class BackendTemplateTest extends \PHPUnit_Framework_TestCase
     protected function tearDown()
     {
         parent::tearDown();
-        \Magento\Framework\App\ObjectManager::setInstance($this->objectManagerBackup);
+        /** @var ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject $objectManagerMock*/
+        $objectManagerMock = $this->getMock(\Magento\Framework\ObjectManagerInterface::class);
+        \Magento\Framework\App\ObjectManager::setInstance($objectManagerMock);
     }
 
     public function testGetSystemConfigPathsWhereCurrentlyUsedNoId()

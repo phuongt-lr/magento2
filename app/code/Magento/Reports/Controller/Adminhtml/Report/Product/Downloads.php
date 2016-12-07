@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Reports\Controller\Adminhtml\Report\Product;
@@ -9,21 +9,18 @@ namespace Magento\Reports\Controller\Adminhtml\Report\Product;
 class Downloads extends \Magento\Reports\Controller\Adminhtml\Report\Product
 {
     /**
-     * Check is allowed for report
+     * Authorization level of a basic admin session
      *
-     * @return bool
+     * @see _isAllowed()
      */
-    protected function _isAllowed()
-    {
-        return $this->_authorization->isAllowed('Magento_Reports::report_products');
-    }
+    const ADMIN_RESOURCE = 'Magento_Reports::report_products';
 
     /**
      * Downloads action
      *
      * @return void
      */
-    public function executeInternal()
+    public function execute()
     {
         $this->_initAction()->_setActiveMenu(
             'Magento_Downloadable::report_products_downloads'
@@ -31,7 +28,7 @@ class Downloads extends \Magento\Reports\Controller\Adminhtml\Report\Product
             __('Downloads'),
             __('Downloads')
         )->_addContent(
-            $this->_view->getLayout()->createBlock('Magento\Reports\Block\Adminhtml\Product\Downloads')
+            $this->_view->getLayout()->createBlock(\Magento\Reports\Block\Adminhtml\Product\Downloads::class)
         );
         $this->_view->getPage()->getConfig()->getTitle()->prepend(__('Downloads Report'));
         $this->_view->renderLayout();

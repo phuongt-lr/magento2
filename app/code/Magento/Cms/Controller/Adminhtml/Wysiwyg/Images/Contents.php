@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Cms\Controller\Adminhtml\Wysiwyg\Images;
@@ -43,7 +43,7 @@ class Contents extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images
     protected function _saveSessionCurrentPath()
     {
         $this->getStorage()->getSession()->setCurrentPath(
-            $this->_objectManager->get('Magento\Cms\Helper\Wysiwyg\Images')->getCurrentPath()
+            $this->_objectManager->get(\Magento\Cms\Helper\Wysiwyg\Images::class)->getCurrentPath()
         );
         return $this;
     }
@@ -53,7 +53,7 @@ class Contents extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images
      *
      * @return \Magento\Framework\Controller\ResultInterface
      */
-    public function executeInternal()
+    public function execute()
     {
         try {
             $this->_initAction()->_saveSessionCurrentPath();

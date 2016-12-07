@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\UrlRewrite\Controller\Adminhtml\Url\Rewrite;
@@ -136,17 +136,19 @@ class Save extends \Magento\UrlRewrite\Controller\Adminhtml\Url\Rewrite
     /**
      * @return void
      */
-    public function executeInternal()
+    public function execute()
     {
         $data = $this->getRequest()->getPostValue();
         if ($data) {
             /** @var $session \Magento\Backend\Model\Session */
-            $session = $this->_objectManager->get('Magento\Backend\Model\Session');
+            $session = $this->_objectManager->get(\Magento\Backend\Model\Session::class);
             try {
                 $model = $this->_getUrlRewrite();
 
                 $requestPath = $this->getRequest()->getParam('request_path');
-                $this->_objectManager->get('Magento\UrlRewrite\Helper\UrlRewrite')->validateRequestPath($requestPath);
+                $this->_objectManager->get(
+                    \Magento\UrlRewrite\Helper\UrlRewrite::class
+                )->validateRequestPath($requestPath);
 
                 $model->setEntityType($this->getRequest()->getParam('entity_type') ?: self::ENTITY_TYPE_CUSTOM)
                     ->setRequestPath($requestPath)

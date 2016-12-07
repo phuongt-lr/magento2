@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -33,7 +33,8 @@ class Webapi extends AbstractWebapi implements CustomerInterface
         ],
         'country_id' => [
             'United States' => 'US',
-            'United Kingdom' => 'GB'
+            'United Kingdom' => 'GB',
+            'Germany' => 'DE'
         ],
         'region_id' => [
             'California' => 12,

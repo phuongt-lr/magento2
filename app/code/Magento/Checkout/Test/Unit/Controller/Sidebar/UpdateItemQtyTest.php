@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Checkout\Test\Unit\Controller\Sidebar;
@@ -33,12 +33,12 @@ class UpdateItemQtyTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->sidebarMock = $this->getMock('Magento\Checkout\Model\Sidebar', [], [], '', false);
-        $this->loggerMock = $this->getMock('Psr\Log\LoggerInterface');
-        $this->jsonHelperMock = $this->getMock('Magento\Framework\Json\Helper\Data', [], [], '', false);
-        $this->requestMock = $this->getMock('Magento\Framework\App\RequestInterface');
+        $this->sidebarMock = $this->getMock(\Magento\Checkout\Model\Sidebar::class, [], [], '', false);
+        $this->loggerMock = $this->getMock(\Psr\Log\LoggerInterface::class);
+        $this->jsonHelperMock = $this->getMock(\Magento\Framework\Json\Helper\Data::class, [], [], '', false);
+        $this->requestMock = $this->getMock(\Magento\Framework\App\RequestInterface::class);
         $this->responseMock = $this->getMockForAbstractClass(
-            'Magento\Framework\App\ResponseInterface',
+            \Magento\Framework\App\ResponseInterface::class,
             [],
             '',
             false,
@@ -49,7 +49,7 @@ class UpdateItemQtyTest extends \PHPUnit_Framework_TestCase
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->updateItemQty = $this->objectManagerHelper->getObject(
-            'Magento\Checkout\Controller\Sidebar\UpdateItemQty',
+            \Magento\Checkout\Controller\Sidebar\UpdateItemQty::class,
             [
                 'sidebar' => $this->sidebarMock,
                 'logger' => $this->loggerMock,
@@ -110,7 +110,7 @@ class UpdateItemQtyTest extends \PHPUnit_Framework_TestCase
             ->with('json encoded')
             ->willReturn('json represented');
 
-        $this->assertEquals('json represented', $this->updateItemQty->executeInternal());
+        $this->assertEquals('json represented', $this->updateItemQty->execute());
     }
 
     public function testExecuteWithLocalizedException()
@@ -154,7 +154,7 @@ class UpdateItemQtyTest extends \PHPUnit_Framework_TestCase
             ->with('json encoded')
             ->willReturn('json represented');
 
-        $this->assertEquals('json represented', $this->updateItemQty->executeInternal());
+        $this->assertEquals('json represented', $this->updateItemQty->execute());
     }
 
     public function testExecuteWithException()
@@ -205,6 +205,6 @@ class UpdateItemQtyTest extends \PHPUnit_Framework_TestCase
             ->with('json encoded')
             ->willReturn('json represented');
 
-        $this->assertEquals('json represented', $this->updateItemQty->executeInternal());
+        $this->assertEquals('json represented', $this->updateItemQty->execute());
     }
 }

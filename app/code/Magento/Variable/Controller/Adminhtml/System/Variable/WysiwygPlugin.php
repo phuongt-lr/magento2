@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Variable\Controller\Adminhtml\System\Variable;
@@ -13,12 +13,12 @@ class WysiwygPlugin extends \Magento\Variable\Controller\Adminhtml\System\Variab
      *
      * @return \Magento\Framework\Controller\Result\Json
      */
-    public function executeInternal()
+    public function execute()
     {
-        $customVariables = $this->_objectManager->create('Magento\Variable\Model\Variable')
+        $customVariables = $this->_objectManager->create(\Magento\Variable\Model\Variable::class)
             ->getVariablesOptionArray(true);
         $storeContactVariabls = $this->_objectManager->create(
-            'Magento\Email\Model\Source\Variables'
+            \Magento\Email\Model\Source\Variables::class
         )->toOptionArray(
             true
         );

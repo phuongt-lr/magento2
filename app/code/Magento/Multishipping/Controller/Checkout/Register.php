@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Multishipping\Controller\Checkout;
@@ -13,9 +13,9 @@ class Register extends \Magento\Multishipping\Controller\Checkout
      *
      * @return void
      */
-    public function executeInternal()
+    public function execute()
     {
-        if ($this->_objectManager->get('Magento\Customer\Model\Session')->isLoggedIn()) {
+        if ($this->_objectManager->get(\Magento\Customer\Model\Session::class)->isLoggedIn()) {
             $this->getResponse()->setRedirect($this->_getHelper()->getMSCheckoutUrl());
             return;
         }

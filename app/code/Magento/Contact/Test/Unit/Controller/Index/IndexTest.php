@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -17,42 +17,39 @@ class IndexTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Scope config mock
-     *
      * @var \Magento\Framework\App\Config\ScopeConfigInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_scopeConfig;
 
     /**
      * View mock
-     *
      * @var \Magento\Framework\App\ViewInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_view;
 
     /**
      * Url mock
-     *
      * @var \Magento\Framework\UrlInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_url;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->_scopeConfig = $this->getMockForAbstractClass(
-            '\Magento\Framework\App\Config\ScopeConfigInterface',
+            \Magento\Framework\App\Config\ScopeConfigInterface::class,
             ['isSetFlag'],
             '',
             false
         );
         $context = $this->getMock(
-            '\Magento\Framework\App\Action\Context',
+            \Magento\Framework\App\Action\Context::class,
             ['getRequest', 'getResponse', 'getView', 'getUrl'],
             [],
             '',
             false
         );
 
-        $this->_url = $this->getMockForAbstractClass('\Magento\Framework\UrlInterface', [], '', false);
+        $this->_url = $this->getMockForAbstractClass(\Magento\Framework\UrlInterface::class, [], '', false);
 
         $context->expects($this->any())
             ->method('getUrl')
@@ -61,17 +58,17 @@ class IndexTest extends \PHPUnit_Framework_TestCase
         $context->expects($this->any())
             ->method('getRequest')
             ->will($this->returnValue(
-                $this->getMockForAbstractClass('\Magento\Framework\App\RequestInterface', [], '', false)
+                $this->getMockForAbstractClass(\Magento\Framework\App\RequestInterface::class, [], '', false)
             ));
 
         $context->expects($this->any())
             ->method('getResponse')
             ->will($this->returnValue(
-                $this->getMockForAbstractClass('\Magento\Framework\App\ResponseInterface', [], '', false)
+                $this->getMockForAbstractClass(\Magento\Framework\App\ResponseInterface::class, [], '', false)
             ));
 
         $this->_view = $this->getMock(
-            '\Magento\Framework\App\ViewInterface',
+            \Magento\Framework\App\ViewInterface::class,
             [],
             [],
             '',
@@ -84,10 +81,10 @@ class IndexTest extends \PHPUnit_Framework_TestCase
 
         $this->_controller = new \Magento\Contact\Controller\Index\Index(
             $context,
-            $this->getMock('\Magento\Framework\Mail\Template\TransportBuilder', [], [], '', false),
-            $this->getMockForAbstractClass('\Magento\Framework\Translate\Inline\StateInterface', [], '', false),
+            $this->getMock(\Magento\Framework\Mail\Template\TransportBuilder::class, [], [], '', false),
+            $this->getMockForAbstractClass(\Magento\Framework\Translate\Inline\StateInterface::class, [], '', false),
             $this->_scopeConfig,
-            $this->getMockForAbstractClass('\Magento\Store\Model\StoreManagerInterface', [], '', false)
+            $this->getMockForAbstractClass(\Magento\Store\Model\StoreManagerInterface::class, [], '', false)
         );
     }
 
@@ -99,6 +96,6 @@ class IndexTest extends \PHPUnit_Framework_TestCase
         $this->_view->expects($this->once())
             ->method('renderLayout');
 
-        $this->_controller->executeInternal();
+        $this->_controller->execute();
     }
 }

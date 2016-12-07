@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Widget\Model\Widget;
@@ -166,7 +166,7 @@ class Instance extends \Magento\Framework\Model\AbstractModel
     protected function _construct()
     {
         parent::_construct();
-        $this->_init('Magento\Widget\Model\ResourceModel\Widget\Instance');
+        $this->_init(\Magento\Widget\Model\ResourceModel\Widget\Instance::class);
         $this->_layoutHandles = [
             'anchor_categories' => self::ANCHOR_CATEGORY_LAYOUT_HANDLE,
             'notanchor_categories' => self::NOTANCHOR_CATEGORY_LAYOUT_HANDLE,
@@ -241,8 +241,16 @@ class Instance extends \Magento\Framework\Model\AbstractModel
         if (is_array($this->getData('store_ids'))) {
             $this->setData('store_ids', implode(',', $this->getData('store_ids')));
         }
-        if (is_array($this->getData('widget_parameters'))) {
-            $this->setData('widget_parameters', serialize($this->getData('widget_parameters')));
+
+        $parameters = $this->getData('widget_parameters');
+        if (is_array($parameters)) {
+            if (array_key_exists('show_pager', $parameters) && !array_key_exists('page_var_name', $parameters)) {
+                $parameters['page_var_name'] = 'p' . $this->mathRandom->getRandomString(
+                    5,
+                    \Magento\Framework\Math\Random::CHARS_LOWERS
+                );
+            }
+            $this->setData('widget_parameters', serialize($parameters));
         }
         $this->setData('page_groups', $tmpPageGroups);
         $this->setData('page_group_ids', $pageGroupIds);

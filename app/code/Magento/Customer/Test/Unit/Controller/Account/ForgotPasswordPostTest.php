@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Test\Unit\Controller\Account;
@@ -71,14 +71,14 @@ class ForgotPasswordPostTest extends \PHPUnit_Framework_TestCase
     {
         $this->prepareContext();
 
-        $this->session = $this->getMockBuilder('Magento\Customer\Model\Session')
+        $this->session = $this->getMockBuilder(\Magento\Customer\Model\Session::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->accountManagement = $this->getMockBuilder('Magento\Customer\Api\AccountManagementInterface')
+        $this->accountManagement = $this->getMockBuilder(\Magento\Customer\Api\AccountManagementInterface::class)
             ->getMockForAbstractClass();
 
-        $this->escaper = $this->getMockBuilder('Magento\Framework\Escaper')
+        $this->escaper = $this->getMockBuilder(\Magento\Framework\Escaper::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -107,7 +107,7 @@ class ForgotPasswordPostTest extends \PHPUnit_Framework_TestCase
             ->with('*/*/forgotpassword')
             ->willReturnSelf();
 
-        $this->assertSame($this->resultRedirect, $this->controller->executeInternal());
+        $this->assertSame($this->resultRedirect, $this->controller->execute());
     }
 
     public function testExecute()
@@ -143,7 +143,7 @@ class ForgotPasswordPostTest extends \PHPUnit_Framework_TestCase
             ->with('*/*/')
             ->willReturnSelf();
 
-        $this->controller->executeInternal();
+        $this->controller->execute();
     }
 
     public function testExecuteNoSuchEntityException()
@@ -179,7 +179,7 @@ class ForgotPasswordPostTest extends \PHPUnit_Framework_TestCase
             ->with('*/*/')
             ->willReturnSelf();
 
-        $this->controller->executeInternal();
+        $this->controller->execute();
     }
 
     public function testExecuteException()
@@ -207,31 +207,33 @@ class ForgotPasswordPostTest extends \PHPUnit_Framework_TestCase
             ->with('*/*/forgotpassword')
             ->willReturnSelf();
 
-        $this->controller->executeInternal();
+        $this->controller->execute();
     }
 
     protected function prepareContext()
     {
-        $this->resultRedirect = $this->getMockBuilder('Magento\Framework\Controller\Result\Redirect')
+        $this->resultRedirect = $this->getMockBuilder(\Magento\Framework\Controller\Result\Redirect::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->resultRedirectFactory = $this->getMockBuilder('Magento\Framework\Controller\Result\RedirectFactory')
+        $this->resultRedirectFactory = $this->getMockBuilder(
+            \Magento\Framework\Controller\Result\RedirectFactory::class
+        )
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->context = $this->getMockBuilder('Magento\Framework\App\Action\Context')
+        $this->context = $this->getMockBuilder(\Magento\Framework\App\Action\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->request = $this->getMockBuilder('Magento\Framework\App\Request\Http')
+        $this->request = $this->getMockBuilder(\Magento\Framework\App\Request\Http::class)
             ->disableOriginalConstructor()
             ->setMethods([
                 'getPost',
             ])
             ->getMock();
 
-        $this->messageManager = $this->getMockBuilder('Magento\Framework\Message\ManagerInterface')
+        $this->messageManager = $this->getMockBuilder(\Magento\Framework\Message\ManagerInterface::class)
             ->getMockForAbstractClass();
 
         $this->resultRedirectFactory->expects($this->any())

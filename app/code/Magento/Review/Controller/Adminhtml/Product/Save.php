@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Review\Controller\Adminhtml\Product;
@@ -15,7 +15,7 @@ class Save extends ProductController
      * @return \Magento\Backend\Model\View\Result\Redirect
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
-    public function executeInternal()
+    public function execute()
     {
         /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
@@ -29,7 +29,7 @@ class Save extends ProductController
 
                     $arrRatingId = $this->getRequest()->getParam('ratings', []);
                     /** @var \Magento\Review\Model\Rating\Option\Vote $votes */
-                    $votes = $this->_objectManager->create('Magento\Review\Model\Rating\Option\Vote')
+                    $votes = $this->_objectManager->create(\Magento\Review\Model\Rating\Option\Vote::class)
                         ->getResourceCollection()
                         ->setReviewFilter($reviewId)
                         ->addOptionInfo()

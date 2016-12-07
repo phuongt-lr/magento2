@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -39,6 +39,18 @@ class GroupId extends DataSource
             }
             $this->storeGroup = $storeGroup;
             $this->data = $storeGroup->getWebsiteId() . "/" . $storeGroup->getName();
+        } elseif (isset($data['fixture'])) {
+            $this->storeGroup = $data['fixture'];
+            $this->data = $this->storeGroup->getWebsiteId() . "/" . $this->storeGroup->getName();
+        }
+
+        if (isset($data['storeGroup']) && $data['storeGroup'] instanceof StoreGroup) {
+            $this->storeGroup = $data['storeGroup'];
+            $this->data = $data['storeGroup']->getWebsiteId() . "/" . $data['storeGroup']->getName();
+        }
+
+        if (isset($data['value'])) {
+            $this->data = $data['value'];
         }
     }
 

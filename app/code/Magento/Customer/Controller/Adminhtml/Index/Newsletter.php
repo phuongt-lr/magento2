@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Controller\Adminhtml\Index;
@@ -12,12 +12,12 @@ class Newsletter extends \Magento\Customer\Controller\Adminhtml\Index
      *
      * @return \Magento\Framework\View\Result\Layout
      */
-    public function executeInternal()
+    public function execute()
     {
         $customerId = $this->initCurrentCustomer();
         /** @var  \Magento\Newsletter\Model\Subscriber $subscriber */
         $subscriber = $this->_objectManager
-            ->create('Magento\Newsletter\Model\Subscriber')
+            ->create(\Magento\Newsletter\Model\Subscriber::class)
             ->loadByCustomerId($customerId);
 
         $this->_coreRegistry->register('subscriber', $subscriber);

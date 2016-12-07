@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Backend\Model;
@@ -23,20 +23,21 @@ class MenuTest extends \PHPUnit_Framework_TestCase
         \Magento\TestFramework\Helper\Bootstrap::getInstance()
             ->loadArea(\Magento\Backend\App\Area\FrontNameResolver::AREA_CODE);
         $this->_model = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
-            ->create('Magento\Backend\Model\Auth');
-        \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get('Magento\Framework\Config\ScopeInterface')
-            ->setCurrentScope(\Magento\Backend\App\Area\FrontNameResolver::AREA_CODE);
+            ->create(\Magento\Backend\Model\Auth::class);
+        \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
+            \Magento\Framework\Config\ScopeInterface::class
+        )->setCurrentScope(\Magento\Backend\App\Area\FrontNameResolver::AREA_CODE);
     }
 
     public function testMenuItemManipulation()
     {
         /* @var $menu \Magento\Backend\Model\Menu */
         $menu = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
-            'Magento\Backend\Model\Menu\Config'
+            \Magento\Backend\Model\Menu\Config::class
         )->getMenu();
         /* @var $itemFactory \Magento\Backend\Model\Menu\Item\Factory */
         $itemFactory = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
-            'Magento\Backend\Model\Menu\Item\Factory'
+            \Magento\Backend\Model\Menu\Item\Factory::class
         );
 
         // Add new item in top level

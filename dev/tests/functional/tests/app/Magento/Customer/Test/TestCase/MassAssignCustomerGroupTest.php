@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -29,14 +29,14 @@ use Magento\Mtf\TestCase\Injectable;
  * 6. Click "Submit" button
  * 7. Perform all assertions
  *
- * @group Customer_Groups_(CS), Customers_(CS)
+ * @group Customer_Groups, Customers
  * @ZephyrId MAGETWO-27892
  */
 class MassAssignCustomerGroupTest extends Injectable
 {
     /* tags */
     const MVP = 'yes';
-    const DOMAIN = 'CS';
+    const TEST_TYPE = 'extended_acceptance_test';
     /* end tags */
 
     /**

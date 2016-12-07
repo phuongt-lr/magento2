@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Theme\Test\Unit\Controller\Adminhtml\System\Design\Theme;
@@ -35,28 +35,30 @@ class GridTest extends \PHPUnit_Framework_TestCase
     protected $view;
 
     /**
-     * @var Grid
+     * @var Delete
      */
     protected $controller;
 
-    public function setUp()
+    protected function setUp()
     {
-        $context = $this->getMockBuilder('Magento\Backend\App\Action\Context')
+        $context = $this->getMockBuilder(\Magento\Backend\App\Action\Context::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->view = $this->getMockBuilder('Magento\Framework\App\ViewInterface')->getMock();
+        $this->view = $this->getMockBuilder(\Magento\Framework\App\ViewInterface::class)->getMock();
         $context->expects($this->any())
             ->method('getView')
             ->willReturn($this->view);
 
-        $this->registry = $this->getMockBuilder('Magento\Framework\Registry')->disableOriginalConstructor()->getMock();
-        $this->fileFactory = $this->getMockBuilder('Magento\Framework\App\Response\Http\FileFactory')
+        $this->registry = $this->getMockBuilder(
+            \Magento\Framework\Registry::class
+        )->disableOriginalConstructor()->getMock();
+        $this->fileFactory = $this->getMockBuilder(\Magento\Framework\App\Response\Http\FileFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->repository = $this->getMockBuilder('Magento\Framework\View\Asset\Repository')
+        $this->repository = $this->getMockBuilder(\Magento\Framework\View\Asset\Repository::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->filesystem = $this->getMockBuilder('Magento\Framework\Filesystem')
+        $this->filesystem = $this->getMockBuilder(\Magento\Framework\Filesystem::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -70,13 +72,13 @@ class GridTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testExecuteInternal()
+    public function testExecute()
     {
         $this->view->expects($this->once())
             ->method('loadLayout')
             ->with(false);
         $this->view->expects($this->once())
             ->method('renderLayout');
-        $this->controller->executeInternal();
+        $this->controller->execute();
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Setup\Console\Command;
@@ -49,7 +49,7 @@ class UpgradeCommand extends AbstractSetupCommand
                 self::INPUT_KEY_KEEP_GENERATED,
                 null,
                 InputOption::VALUE_NONE,
-                'Prevents generated code from being deleted. ' . PHP_EOL .
+                'Prevents generated files from being deleted. ' . PHP_EOL .
                 'We discourage using this option except when deploying to production. ' . PHP_EOL .
                 'Consult your system integrator or administrator for more information.'
             )
@@ -71,7 +71,9 @@ class UpgradeCommand extends AbstractSetupCommand
         $installer->installSchema();
         $installer->installDataFixtures();
         if (!$keepGenerated) {
-            $output->writeln('<info>Please re-run Magento compile command</info>');
+            $output->writeln('<info>Please re-run Magento compile command. Use the command "setup:di:compile"</info>');
         }
+
+        return \Magento\Framework\Console\Cli::RETURN_SUCCESS;
     }
 }

@@ -1,14 +1,17 @@
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define([
-    './utils',
     'jquery',
+    'underscore',
+    './utils',
+    'moment',
     'jquery/validate',
     'jquery/ui',
-    'mage/translate'
-], function (utils, $) {
+    'mage/translate',
+    'mageUtils'
+], function ($, _, utils, moment, validate, ui, $t, mageUtils) {
     'use strict';
 
     /**
@@ -44,16 +47,16 @@ define([
      * Collection of validation rules including rules from additional-methods.js
      * @type {Object}
      */
-    return {
+    return _.mapObject({
         "min_text_length": [
             function (value, params) {
-                return value.length == 0 || value.length >= +params;
+                return _.isUndefined(value) || value.length == 0 || value.length >= +params;
             },
             $.mage.__('Please enter more or equal than {0} symbols.')
         ],
         "max_text_length": [
             function (value, params) {
-                return value.length <= +params;
+                return !_.isUndefined(value) && value.length <= +params;
             },
             $.mage.__('Please enter less or equal than {0} symbols.')
         ],
@@ -72,7 +75,7 @@ define([
         "range-words": [
             function(value, params) {
                 return utils.stripHtml(value).match(/\b\w+\b/g).length >= params[0] &&
-                        value.match(/bw+b/g).length < params[1];
+                    value.match(/bw+b/g).length < params[1];
             },
             $.mage.__('Please enter between {0} and {1} words.')
         ],
@@ -396,7 +399,7 @@ define([
                 }
                 return !(pass.length > 0 && pass.length < 6);
             },
-            $.mage.__('Please enter 6 or more characters. Leading or trailing spaces will be ignored.')
+            $.mage.__('Please enter 6 or more characters. Leading and trailing spaces will be ignored.')
         ],
         "validate-admin-password": [
             function(value) {
@@ -417,6 +420,47 @@ define([
                 return true;
             },
             $.mage.__('Please enter 7 or more characters, using both numeric and alphabetic.')
+        ],
+        "validate-customer-password": [
+            function (v, elm) {
+                var validator = this,
+                    length = 0,
+                    counter = 0;
+                var passwordMinLength = $(elm).data('password-min-length');
+                var passwordMinCharacterSets = $(elm).data('password-min-character-sets');
+                var pass = $.trim(v);
+                var result = pass.length >= passwordMinLength;
+                if (result == false) {
+                    /*eslint-disable max-len*/
+                    validator.passwordErrorMessage = $.mage.__('Minimum length of this field must be equal or greater than %1 symbols. Leading and trailing spaces will be ignored.').replace('%1', passwordMinLength);
+
+                    /*eslint-enable max-len*/
+                    return result;
+                }
+                if (pass.match(/\d+/)) {
+                    counter ++;
+                }
+                if (pass.match(/[a-z]+/)) {
+                    counter ++;
+                }
+                if (pass.match(/[A-Z]+/)) {
+                    counter ++;
+                }
+                if (pass.match(/[^a-zA-Z0-9]+/)) {
+                    counter ++;
+                }
+                if (counter < passwordMinCharacterSets) {
+                    result = false;
+
+                    /*eslint-disable max-len*/
+                    validator.passwordErrorMessage = $.mage.__('Minimum of different classes of characters in password is %1. Classes of characters: Lower Case, Upper Case, Digits, Special Characters.').replace('%1', passwordMinCharacterSets);
+
+                    /*eslint-enable max-len*/
+                }
+                return result;
+            }, function () {
+                return this.passwordErrorMessage;
+            }
         ],
         "validate-url": [
             function(value) {
@@ -530,6 +574,15 @@ define([
             },
             $.mage.__('Please enter a valid number in this field.')
         ],
+        'validate-integer': [
+            function(value) {
+                return (
+                    utils.isEmptyNoTrim(value)
+                    || (!isNaN(utils.parseNumber(value)) && /^\s*-?\d*\s*$/.test(value))
+                );
+            },
+            $.mage.__('Please enter a valid integer in this field.')
+        ],
         "validate-number-range": [
             function(value, param) {
                 if (utils.isEmptyNoTrim(value)) {
@@ -631,9 +684,9 @@ define([
             $.mage.__('Please use only letters (a-z or A-Z) or numbers (0-9) in this field. No spaces or other characters are allowed.')
         ],
         "validate-date": [
-            function(value) {
-                var test = new Date(value);
-                return utils.isEmptyNoTrim(value) || !isNaN(test);
+            function(value, params, additionalParams) {
+                var test = moment(value, additionalParams.dateFormat);
+                return utils.isEmptyNoTrim(value) || test.isValid();
             },$.mage.__('Please enter a valid date.')
 
         ],
@@ -661,27 +714,21 @@ define([
         ],
         "less-than-equals-to": [
             function(value, params) {
-                if ($.isNumeric($(params).val()) && $.isNumeric(value)) {
-                    this.lteToVal = $(params).val();
-                    return parseFloat(value) <= parseFloat($(params).val());
+                if ($.isNumeric(params) && $.isNumeric(value)) {
+                    return parseFloat(value) <= parseFloat(params);
                 }
                 return true;
             },
-            function() {
-                return 'Please enter a value less than or equal to %s.'.replace('%s', this.lteToVal);
-            }
+            $.mage.__('Please enter a value less than or equal to {0}.')
         ],
         "greater-than-equals-to": [
             function(value, params) {
-                if ($.isNumeric($(params).val()) && $.isNumeric(value)) {
-                    this.gteToVal = $(params).val();
-                    return parseFloat(value) >= parseFloat($(params).val());
+                if ($.isNumeric(params) && $.isNumeric(value)) {
+                    return parseFloat(value) >= parseFloat(params);
                 }
                 return true;
             },
-            function() {
-                return 'Please enter a value greater than or equal to %s.'.replace('%s', this.gteToVal);
-            }
+            $.mage.__('Please enter a value greater than or equal to {0}.')
         ],
         "validate-emails": [
             function(value) {
@@ -696,7 +743,8 @@ define([
                     }
                 }
                 return true;
-            }, "Please enter valid email addresses, separated by commas. For example, johndoe@domain.com, johnsmith@domain.com."
+            },
+            $.mage.__('Please enter valid email addresses, separated by commas. For example, johndoe@domain.com, johnsmith@domain.com.')
         ],
         "validate-cc-number": [
             /**
@@ -717,7 +765,7 @@ define([
              * @param value - input field value
              * @return {*}
              */
-            function(value) {
+                function(value) {
                 return value;
             }, $.mage.__('Please enter issue number or start date for switch/solo card type.')
         ],
@@ -765,7 +813,7 @@ define([
                 }
                 return true;
             },
-            $.mage.__('Please enter 6 or more characters. Leading or trailing spaces will be ignored.')
+            $.mage.__('Please enter 6 or more characters. Leading and trailing spaces will be ignored.')
         ],
         'validate-item-quantity': [
             function (value, params) {
@@ -786,6 +834,47 @@ define([
                 return value === $(param).val();
             },
             $.validator.messages.equalTo
+        ],
+        'validate-file-type': [
+            function (name, types) {
+                var extension = name.split('.').pop().toLowerCase();
+
+                if (types && typeof types === 'string') {
+                    types = types.split(' ');
+                }
+
+                return !types || !types.length || ~types.indexOf(extension);
+            },
+            $.mage.__('We don\'t recognize or support this file extension type.')
+        ],
+        'validate-max-size': [
+            function (size, maxSize) {
+                return maxSize === false || size < maxSize;
+            },
+            $.mage.__('File you are trying to upload exceeds maximum file size limit.')
+        ],
+        'validate-if-tag-script-exist': [
+            function (value) {
+                return !value || (/<script\b[^>]*>([\s\S]*?)<\/script>$/ig).test(value);
+            },
+            $.mage.__('Please use tag SCRIPT with SRC attribute or with proper content to include JavaScript to the document.')
+        ],
+        'date_range_min': [
+            function (value, minValue, params) {
+                return moment.utc(value, params.dateFormat).unix() >= minValue;
+            },
+            $.mage.__('The date is not within the specified range.')
+        ],
+        'date_range_max': [
+            function (value, maxValue, params) {
+                return moment.utc(value, params.dateFormat).unix() <= maxValue;
+            },
+            $.mage.__('The date is not within the specified range.')
         ]
-    };
+    }, function (data) {
+        return {
+            handler: data[0],
+            message: data[1]
+        };
+    });
 });

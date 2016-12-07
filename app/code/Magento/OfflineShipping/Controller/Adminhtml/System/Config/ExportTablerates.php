@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\OfflineShipping\Controller\Adminhtml\System\Config;
@@ -46,12 +46,12 @@ class ExportTablerates extends \Magento\Config\Controller\Adminhtml\System\Abstr
      *
      * @return ResponseInterface
      */
-    public function executeInternal()
+    public function execute()
     {
         $fileName = 'tablerates.csv';
         /** @var $gridBlock \Magento\OfflineShipping\Block\Adminhtml\Carrier\Tablerate\Grid */
         $gridBlock = $this->_view->getLayout()->createBlock(
-            'Magento\OfflineShipping\Block\Adminhtml\Carrier\Tablerate\Grid'
+            \Magento\OfflineShipping\Block\Adminhtml\Carrier\Tablerate\Grid::class
         );
         $website = $this->_storeManager->getWebsite($this->getRequest()->getParam('website'));
         if ($this->getRequest()->getParam('conditionName')) {

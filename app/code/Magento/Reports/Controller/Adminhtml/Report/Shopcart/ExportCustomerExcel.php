@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Reports\Controller\Adminhtml\Report\Shopcart;
@@ -15,11 +15,11 @@ class ExportCustomerExcel extends \Magento\Reports\Controller\Adminhtml\Report\S
      *
      * @return ResponseInterface
      */
-    public function executeInternal()
+    public function execute()
     {
         $fileName = 'shopcart_customer.xml';
         $content = $this->_view->getLayout()->createBlock(
-            'Magento\Reports\Block\Adminhtml\Shopcart\Customer\Grid'
+            \Magento\Reports\Block\Adminhtml\Shopcart\Customer\Grid::class
         )->getExcelFile(
             $fileName
         );

@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Widget\Controller\Adminhtml\Widget\Instance;
@@ -20,7 +20,7 @@ class Blocks extends \Magento\Widget\Controller\Adminhtml\Widget\Instance
         $layout = $this->getRequest()->getParam('layout');
         $selected = $this->getRequest()->getParam('selected', null);
         $blocksChooser = $this->_view->getLayout()->createBlock(
-            'Magento\Widget\Block\Adminhtml\Widget\Instance\Edit\Chooser\Container'
+            \Magento\Widget\Block\Adminhtml\Widget\Instance\Edit\Chooser\Container::class
         )->setValue(
             $selected
         )->setArea(
@@ -40,10 +40,10 @@ class Blocks extends \Magento\Widget\Controller\Adminhtml\Widget\Instance
      *
      * @return void
      */
-    public function executeInternal()
+    public function execute()
     {
         $this->_objectManager->get(
-            'Magento\Framework\App\State'
+            \Magento\Framework\App\State::class
         )->emulateAreaCode(
             'frontend',
             [$this, 'renderPageContainers']

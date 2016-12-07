@@ -1,9 +1,13 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Eav\Model\ResourceModel\Entity\Attribute;
+
+use Magento\Eav\Model\Entity\Attribute\AttributeGroupAlreadyExistsException;
+use Magento\Framework\DB\Adapter\DuplicateException;
+use Magento\Framework\Model\AbstractModel;
 
 /**
  * Eav Resource Entity Attribute Group
@@ -12,13 +16,6 @@ namespace Magento\Eav\Model\ResourceModel\Entity\Attribute;
  */
 class Group extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
-    /**
-     * Constants for attribute group codes
-     */
-    const TAB_GENERAL_CODE = 'product-details';
-
-    const TAB_IMAGE_MANAGEMENT_CODE = 'image-management';
-
     /**
      * Resource initialization
      *
@@ -57,10 +54,10 @@ class Group extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
     /**
      * Perform actions before object save
      *
-     * @param \Magento\Framework\Model\AbstractModel $object
+     * @param AbstractModel $object
      * @return \Magento\Framework\Model\ResourceModel\Db\AbstractDb
      */
-    protected function _beforeSave(\Magento\Framework\Model\AbstractModel $object)
+    protected function _beforeSave(AbstractModel $object)
     {
         if (!$object->getSortOrder()) {
             $object->setSortOrder($this->_getMaxSortOrder($object) + 1);
@@ -71,10 +68,10 @@ class Group extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
     /**
      * Perform actions after object save
      *
-     * @param \Magento\Framework\Model\AbstractModel $object
+     * @param AbstractModel $object
      * @return \Magento\Framework\Model\ResourceModel\Db\AbstractDb
      */
-    protected function _afterSave(\Magento\Framework\Model\AbstractModel $object)
+    protected function _afterSave(AbstractModel $object)
     {
         if ($object->getAttributes()) {
             foreach ($object->getAttributes() as $attribute) {
@@ -89,7 +86,7 @@ class Group extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
     /**
      * Retrieve max sort order
      *
-     * @param \Magento\Framework\Model\AbstractModel $object
+     * @param AbstractModel $object
      * @return int
      */
     protected function _getMaxSortOrder($object)
@@ -136,5 +133,39 @@ class Group extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         }
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function saveNewObject(AbstractModel $object)
+    {
+        try {
+            return parent::saveNewObject($object);
+        } catch (DuplicateException $e) {
+            throw new AttributeGroupAlreadyExistsException(
+                __(
+                    'Attribute group with same code already exist. Please rename "%1" group',
+                    $object->getAttributeGroupName()
+                )
+            );
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function updateObject(AbstractModel $object)
+    {
+        try {
+            return parent::updateObject($object);
+        } catch (DuplicateException $e) {
+            throw new AttributeGroupAlreadyExistsException(
+                __(
+                    'Attribute group with same code already exist. Please rename "%1" group',
+                    $object->getAttributeGroupName()
+                )
+            );
+        }
     }
 }

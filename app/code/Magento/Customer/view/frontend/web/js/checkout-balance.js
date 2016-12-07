@@ -1,5 +1,5 @@
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 /*jshint browser:true jquery:true*/
@@ -24,10 +24,10 @@ define([
                     this.eventData.price = -1 * this.options.balance;
                 } else {
                     if (this.options.amountSubstracted) {
-                        this.eventData.price = this.options.usedAmount;
+                        this.eventData.price = parseFloat(this.options.usedAmount);
                         this.options.amountSubstracted = false;
                     } else {
-                        this.eventData.price = this.options.balance;
+                        this.eventData.price = parseFloat(this.options.balance);
                     }
                 }
                 this.element.trigger('updateCheckoutPrice', this.eventData);

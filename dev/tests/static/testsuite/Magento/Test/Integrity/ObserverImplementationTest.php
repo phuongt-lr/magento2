@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Test\Integrity;
@@ -15,7 +15,7 @@ class ObserverImplementationTest extends \PHPUnit_Framework_TestCase
     /**
      * Observer interface
      */
-    const OBSERVER_INTERFACE = 'Magento\Framework\Event\ObserverInterface';
+    const OBSERVER_INTERFACE = \Magento\Framework\Event\ObserverInterface::class;
 
     /**
      * @var array

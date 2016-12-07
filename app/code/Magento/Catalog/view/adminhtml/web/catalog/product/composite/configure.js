@@ -1,13 +1,13 @@
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 define([
-    "jquery",
+    "Magento_Ui/js/lib/view/utils/async",
     "jquery/ui",
     "mage/translate",
     "prototype",
-    'Magento_Ui/js/modal/modal'
+    "Magento_Ui/js/modal/modal"
 ], function(jQuery){
 
     window.ProductConfigure = Class.create();
@@ -45,16 +45,18 @@ define([
             var self = this;
 
             this._initWindowElements();
-            this.dialog = jQuery('#product_composite_configure').modal({
-                title: jQuery.mage.__('Configure Product'),
-                type: 'slide',
-                buttons: [{
-                    text: jQuery.mage.__('OK'),
-                    'class': 'action-primary',
-                    click: function () {
-                        self.onConfirmBtn();
-                    }
-                }]
+            jQuery.async('#product_composite_configure',function (el) {
+                self.dialog = jQuery(el).modal({
+                    title: jQuery.mage.__('Configure Product'),
+                    type: 'slide',
+                    buttons: [{
+                        text: jQuery.mage.__('OK'),
+                        'class': 'action-primary',
+                        click: function () {
+                            self.onConfirmBtn();
+                        }
+                    }]
+                });
             });
         },
 

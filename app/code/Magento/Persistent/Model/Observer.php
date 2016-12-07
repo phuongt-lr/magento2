@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Persistent\Model;
@@ -108,7 +108,7 @@ class Observer
     protected function _applyAccountLinksPersistentData()
     {
         if (!$this->_layout->getBlock('header.additional')) {
-            $this->_layout->addBlock('Magento\Persistent\Block\Header\Additional', 'header.additional');
+            $this->_layout->addBlock(\Magento\Persistent\Block\Header\Additional::class, 'header.additional');
         }
     }
 
